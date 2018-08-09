@@ -1,2 +1,2 @@
 # DisarmGears
-Disarm's algorithm framework
+Disarm's brains on demand framework
