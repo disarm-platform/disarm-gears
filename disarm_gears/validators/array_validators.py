@@ -13,7 +13,6 @@ def validate_1d_array(x, size=None):
 
 def validate_2d_array(x, n_cols=None, n_rows=None):
     '''Validate type and dimensions of an object x.'''
-
     assert isinstance(x, np.ndarray), 'Expecting a numpy array.'
     assert x.ndim == 2, 'Expecting a two-dimensional array.'
 
@@ -22,6 +21,7 @@ def validate_2d_array(x, n_cols=None, n_rows=None):
 
     if n_cols is not None:
         assert x.shape[1] == n_cols, 'Number of columns is different from expected.'
+
 
 def validate_integer_array(x):
     '''Validate array elements are integers.'''
