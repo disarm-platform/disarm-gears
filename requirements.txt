@@ -1,1 +1,10 @@
-numpy>=1.14.2
+numpy >= 1.14.2
+scipy
+scikit-learn
+pandas
+geopandas
+shapely >= 1.6.4
+
+# For tests
+nose
+
