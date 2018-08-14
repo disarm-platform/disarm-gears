@@ -20,7 +20,6 @@ class Tessellation:
         :param crs: Coordinate refrence system (optional).
                     String.
         '''
-
         # NOTE: The use of crs is not tested yet!!!
 
         # Validate input points
@@ -95,10 +94,10 @@ class Tessellation:
         :param X: Set of coordinates.
                   Numpy array, shape = [n, 2]
         '''
-
         # Validate input
         validate_2d_array(X, n_cols=2)
 
+        # Build GeoDataFrame of X and join it with self.region
         geom_points = geop.GeoDataFrame(crs=self.projection, geometry=[geometry.Point(xi) for xi in X])
         ix = geop.tools.sjoin(geom_points, self.region, how='left')['index_right']
         ix[np.isnan(ix)] = -1

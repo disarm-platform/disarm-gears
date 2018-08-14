@@ -6,7 +6,13 @@ from ..validators import *
 class ChainDrive(object):
 
     def __init__(self, base_model_gen, x_norm_gen=None):
+        '''
+        Core pipeline for supervised models.
 
+        :param base_model_gen: A callable object that instantiates a machine learning model.
+        :param x_norm_gen: A callable object that instantiates a preprocessing method.
+                           One of StandardScaler or Normalizer from scikit-learn.
+        '''
         assert callable(base_model_gen), 'Object is not callable'
         self.new_base_model = base_model_gen
 
@@ -21,16 +27,16 @@ class ChainDrive(object):
 
 
     def _store_raw_inputs_dims(self, target, x_coords, x_time, x_features):
-        '''Store the inputs dimensions.'''
+        '''Store the dimensions of the input objects.'''
         self.n_data = target.size
         self.spatial = False if x_coords is None else True
         self.temporal = False if x_time is None else True
         self.n_features = 0 if x_features is None else x_features.shape[1]
 
 
-    def _validate_train_inputs_dims(self, target, x_coords, x_time, x_features, n_trials, exposure, overwrite):
+    def _validate_train_inputs_dims(self, target, x_coords, x_time, x_features, n_trials,
+                                    exposure, overwrite):
         '''Assert the consistency of the inputs dimensions.'''
-
         validate_1d_array(target)
         size = target.size
 
@@ -65,8 +71,7 @@ class ChainDrive(object):
 
 
     def _validate_prediction_inputs_dims(self, x_coords, x_time, x_features, exposure):
-        '''Assert the consistency of a new set of inputs for prediction.'''
-
+        '''Assert the consistency of a new set of inputs for predictions or posterior sampling.'''
         assert x_coords is not None or x_time is not None or x_features is not None
 
         # Validate arrays with x_variables
@@ -98,13 +103,12 @@ class ChainDrive(object):
 
 
     def _preprocess_target(self, target):
-        '''Preprocessing of target values'''
+        '''Preprocessing of target values.'''
         return target
 
 
     def _stack_x(self, x_coords=None, x_time=None, x_features=None):
         '''Build X from x_coords, x_time and x_features.'''
-
         x_list = list()
 
         # Coords columns
@@ -129,7 +133,6 @@ class ChainDrive(object):
 
     def _preprocess_train_x_variables(self, x_coords, x_time, x_features, overwrite=False):
         '''Preprocessing of x_variables for new training.'''
-
         X = self._stack_x(x_coords=x_coords, x_time=x_time, x_features=x_features)
 
         # If normalization is required
@@ -158,15 +161,28 @@ class ChainDrive(object):
         '''Build arrays: y, X, weights and exposure to pass to base models.'''
         weights = None
         exposure = exposure
+
         return target, X, weights, exposure
 
 
     def fit(self, target, x_coords, x_time=None, x_features=None, n_trials=None, exposure=None, overwrite=True):
         '''
-        Fit a new model
+        Instantiate a base_model and train it.
 
+        :param target: Variable to predict.
+                       Numpy array, shape [n_data, ]
+        :param x_coords: Spatial coordiantes associated to the target values (optional).
+                         Numpy array, shape [n_data, 2]
+        :param x_time: Temporal reference associated to the target values (optional).
+                       Numpy array, shape [n_data, ]
+        :param x_features: Additional variables/features associated to the target values (optional).
+                           Numpy array, shape [n_data, ] or [n_data, n_features]
+        :param n_trials: For binomial models, number of trials associated to the target values (optional).
+                         Numpy array, shape [n_data, ]
+        :param exposure: For count process models, exposure associated to the target values (optional).
+                         Numpy array, shape [n_data, ]
         :param overwrite: Whether previous training (if any) will be overwritten.
-                          Otherwise the new trained base model is returned.
+                          Otherwise the new trained base model is returned (default=True).
                           Boolean object.
         '''
         # Validate inputs
@@ -202,7 +218,16 @@ class ChainDrive(object):
 
     def predict(self, x_coords=None, x_time=None, x_features=None, exposure=None):
         '''
-        Make predictions
+        Return the predictive mean for a set of new points.
+
+        :param x_coords: Spatial coordiantes associated to the predictions.
+                         A numpy array, shape [n_data, 2] or None if model is not spatial.
+        :param x_time: Temporal reference associated to the predictions.
+                       Numpy array, shape [n_data, ] or None if model is not temporal.
+        :param x_features: Additional variables/features associated to the predictions.
+                           Numpy array, shape [n_data, ] or [n_data, n_features] or None if n_features = 0.
+        :param exposure: For count process models, exposure associated to the predicted values (optional).
+                         Numpy array, shape [n_data, ]
         '''
         # Check there is a trained model
         assert hasattr(self, 'base_model'), 'A base_model has not been trained yet.'
@@ -223,9 +248,17 @@ class ChainDrive(object):
 
     def posterior_samples(self, x_coords=None, x_time=None, x_features=None, exposure=None, n_samples=100):
         '''
-        Generate samples from the posterior distribution
+        Return samples from the posterior distribution.
+
+        :param x_coords: Spatial coordiantes associated to the sampled values.
+                         A numpy array, shape [n_data, 2] or None if model is not spatial.
+        :param x_time: Temporal reference associated to the sampled values.
+                       Numpy array, shape [n_data, ] or None if model is not temporal.
+        :param x_features: Additional variables/features associated to the sampled values.
+                           Numpy array, shape [n_data, ] or [n_data, n_features] or None if n_features = 0.
+        :param exposure: For count process models, exposure associated to the sampled values (optional).
+                         Numpy array, shape [n_data, ]
         '''
-        # Check there is a trained model
         assert hasattr(self, 'base_model'), 'A base_model has not been trained yet.'
 
         # Validate inputs
@@ -243,12 +276,15 @@ class ChainDrive(object):
 
 
     def _fit_base_model(self, y, X, weights, exposure):
+        '''Train a new instance of the base_model.'''
         raise NotImplementedError
 
 
     def _predict_base_model(self, X, exposure):
+        '''Call the prediction method of the base_model.'''
         raise NotImplementedError
 
 
     def _posterior_samples_base_model(self, X, exposure, n_samples):
+        '''Call the sampling method of the base_model.'''
         raise NotImplementedError

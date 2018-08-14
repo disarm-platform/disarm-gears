@@ -20,7 +20,6 @@ def binomial_to_bernoulli(n_positive, n_trials, X=None, aggregated=True):
 
     :return: tuple (ones-zeros array [m, ], weights array [m, ], new_X array [m, ] or [m, d])
     '''
-
     # Validate arrays
     validate_1d_array(n_positive, size=None)
     validate_1d_array(n_trials, size=n_positive.size)
