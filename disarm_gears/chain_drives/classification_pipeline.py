@@ -1,18 +1,24 @@
 import numpy as np
-from .chain_drive import ChainDrive
+from .supervised_learning_core import SupervisedLearningCore
 from ..util import binomial_to_bernoulli
 from ..gears import PrevalenceModel
 
 
-class ClassificationChain(ChainDrive):
+class ClassificationPipeline(SupervisedLearningCore):
 
     def __init__(self, base_model_gen, x_norm_gen=None):
-        super(ClassificationChain, self).__init__(base_model_gen=base_model_gen, x_norm_gen=x_norm_gen)
+        super(ClassificationPipeline, self).__init__(base_model_gen=base_model_gen, x_norm_gen=x_norm_gen)
+
+        # Check base_model is implemented
+        base_model = self.new_base_model()
+        if isinstance(base_model, PrevalenceModel):
+            pass
+        else:
+            raise NotImplementedError
 
 
     def _build_yxwe(self, target, X, n_trials=None, exposure=None):
         '''Build arrays: y, X, weights and exposure to pass to base models.'''
-
         new_target, weights, new_X = binomial_to_bernoulli(n_positive=target, n_trials=n_trials, X=X,
                                                            aggregated=True)
         exposure = None
@@ -20,12 +26,10 @@ class ClassificationChain(ChainDrive):
         return new_target, new_X, weights, exposure
 
     def _fit_base_model(self, y, X, weights, exposure=None):
-
+        '''Train a new instance of the base_model.'''
         base_model = self.new_base_model()
-
         if isinstance(base_model, PrevalenceModel):
             y[y == 0] -= 1.
-
             j = 0
             if self.spatial:
                 slice_s = slice(0, 2)
@@ -41,19 +45,20 @@ class ClassificationChain(ChainDrive):
                 slice_f = slice(j, j + self.n_features)
             else:
                 slice_f = None
-
         base_model.fit(y=y, X=X, weights=weights, slice_s=slice_s, slice_t=slice_t, slice_f=slice_f)
 
         return base_model
 
 
     def _predict_base_model(self, X, exposure=None):
-
+        '''Call the prediction method of the base_model.'''
         mu = self.base_model.predict(X)
+
         return mu
 
 
     def _posterior_samples_base_model(self, X, exposure=None, n_samples=100):
+        '''Call the sampling method of the base_model.'''
 
         return self.base_model.posterior_samples(X, n_samples=n_samples)
 

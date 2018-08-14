@@ -1,2 +1,2 @@
-from .chain_drive import ChainDrive
-from .classification_chain import ClassificationChain
+from .supervised_learning_core import SupervisedLearningCore
+from .classification_pipeline import ClassificationPipeline
