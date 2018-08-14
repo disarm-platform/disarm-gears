@@ -50,8 +50,11 @@ def binomial_to_bernoulli(n_positive, n_trials, X=None, aggregated=True):
         # Repeat 0-1 as many times as n_positive-n_trials and add weight one to each of them.
 
         if X is not None:
-            new_X = np.vstack([np.repeat(_x, _w).reshape(new_X.shape[1], -1).T for
-                               _x,_w in zip(new_X, weights)])
+            if X.ndim == 1:
+                new_X = np.hstack([np.repeat(_x, _w) for _x,_w in zip(new_X, weights)])
+            else:
+                new_X = np.vstack([np.repeat(_x, _w).reshape(new_X.shape[1], -1).T for
+                                   _x,_w in zip(new_X, weights)])
 
         target = np.hstack([_y * np.ones(_w) for _y,_w in zip(target, weights.astype(int))])
         weights = np.ones_like(target)
