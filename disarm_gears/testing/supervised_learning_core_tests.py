@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-from disarm_gears.chain_drives import ChainDrive
+from disarm_gears.chain_drives import SupervisedLearningCore as SLC
 
 
 # Some inputs
@@ -18,24 +18,24 @@ def dummy_base_model(**kwargs):
     return 0
 
 
-class ChainDriveSuperTests(unittest.TestCase):
+class SupervisedLearningCoreTests(unittest.TestCase):
 
     def test_init_core_class(self):
 
         # Check bad inputs
-        self.assertRaises(AssertionError, ChainDrive, base_model_gen=None, x_norm_gen=True)
-        self.assertRaises(AssertionError, ChainDrive, base_model_gen=lambda x:x, x_norm_gen=True)
+        self.assertRaises(AssertionError, SLC, base_model_gen=None, x_norm_gen=True)
+        self.assertRaises(AssertionError, SLC, base_model_gen=lambda x:x, x_norm_gen=True)
 
         # Check attributes after init
-        pipeline1 = ChainDrive(base_model_gen=lambda x:x, x_norm_gen=None)
-        pipeline2 = ChainDrive(base_model_gen=lambda x:x, x_norm_gen=StandardScaler)
+        pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
+        pipeline2 = SLC(base_model_gen=lambda x:x, x_norm_gen=StandardScaler)
         self.assertTrue(hasattr(pipeline1, 'new_base_model'))
         self.assertTrue(hasattr(pipeline1, 'x_norm'))
         self.assertTrue(hasattr(pipeline2, 'new_x_norm_rule'))
 
     def test_store_raw_inputs_dims(self):
 
-        pipeline1 = ChainDrive(base_model_gen=lambda x:x, x_norm_gen=None)
+        pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
 
         # All x_variables
         pipeline1._store_raw_inputs_dims(target=_target, x_coords=_x_coords, x_time=_x_time,
@@ -58,7 +58,7 @@ class ChainDriveSuperTests(unittest.TestCase):
 
     def test_validate_train_inputs_dims(self):
 
-        pipeline1 = ChainDrive(base_model_gen=lambda x:x, x_norm_gen=None)
+        pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
         bad_target = np.ones(5)
 
         self.assertRaises(AssertionError, pipeline1._validate_train_inputs_dims,
@@ -76,7 +76,7 @@ class ChainDriveSuperTests(unittest.TestCase):
 
     def test_validate_prediction_inputs_dims(self):
 
-        pipeline1 = ChainDrive(base_model_gen=lambda x:x, x_norm_gen=None)
+        pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
 
         # All x_variables
         pipeline1._store_raw_inputs_dims(target=_target,x_coords=_x_coords, x_time=_x_time,
@@ -114,20 +114,20 @@ class ChainDriveSuperTests(unittest.TestCase):
 
     def test_stack_x(self):
 
-        pipeline1 = ChainDrive(base_model_gen=lambda x:x, x_norm_gen=None)
+        pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
         bad_x_coords = np.arange(8).reshape(-1, 2)
         self.assertRaises(AssertionError, pipeline1._stack_x, x_coords=bad_x_coords,
                           x_time=_x_time,x_features=_x_features)
 
     def test_preprocess_target(self):
 
-        pipeline1 = ChainDrive(base_model_gen=lambda x:x, x_norm_gen=None)
+        pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
         new_target = pipeline1._preprocess_target(target=_target)
         self.assertIsInstance(new_target, np.ndarray)
 
     def test_preprocess_train_x_variables(self):
 
-        pipeline1 = ChainDrive(base_model_gen=lambda x:x, x_norm_gen=None)
+        pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
         X = pipeline1._preprocess_train_x_variables(x_coords=_x_coords, x_time=_x_time,
                                                     x_features=_x_features)
         self.assertIsInstance(X, np.ndarray)
@@ -135,7 +135,7 @@ class ChainDriveSuperTests(unittest.TestCase):
 
     def test_preprocess_prediction_x_variables(self):
 
-        pipeline1 = ChainDrive(base_model_gen=lambda x:x, x_norm_gen=None)
+        pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
         X = pipeline1._preprocess_prediction_x_variables(x_coords=_x_coords, x_time=_x_time,
                                                     x_features=_x_features)
         self.assertIsInstance(X, np.ndarray)
@@ -143,15 +143,14 @@ class ChainDriveSuperTests(unittest.TestCase):
 
 
 # The tests below should be implemented for all subclasses as well
-
-class ChainDriveSubclassTests(unittest.TestCase):
+class SLCSubclassTests(unittest.TestCase):
 
     def test_init(self):
         pass
 
     def test_build_yxwe(self):
 
-        pipeline1 = ChainDrive(base_model_gen=lambda x:x, x_norm_gen=None)
+        pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
         output1 = pipeline1._build_yxwe(target=_target, X=np.ones_like(_target)[:,None],
                                         n_trials=None, exposure=None)
         self.assertEqual(len(output1), 4)
@@ -162,7 +161,7 @@ class ChainDriveSubclassTests(unittest.TestCase):
 
     def test_fit(self):
 
-        pipeline1 = ChainDrive(base_model_gen=lambda x:x, x_norm_gen=None)
+        pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
         self.assertRaises(NotImplementedError, pipeline1.fit, target=_target, x_coords=_x_coords,
                           x_time=_x_time, x_features=_x_features, n_trials=None, exposure=None,
                           overwrite=False)
@@ -172,7 +171,7 @@ class ChainDriveSubclassTests(unittest.TestCase):
 
     def test_predict(self):
 
-        pipeline1 = ChainDrive(base_model_gen=lambda x:x, x_norm_gen=None)
+        pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
         self.assertRaises(AssertionError, pipeline1.predict, x_coords=_x_coords,
                           x_time=_x_time, x_features=_x_features, exposure=None)
 
@@ -186,7 +185,7 @@ class ChainDriveSubclassTests(unittest.TestCase):
 
     def test_posterior_samples(self):
 
-        pipeline1 = ChainDrive(base_model_gen=lambda x:x, x_norm_gen=None)
+        pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
         self.assertRaises(AssertionError, pipeline1.posterior_samples, x_coords=_x_coords,
                           x_time=_x_time, x_features=_x_features, exposure=None)
 
