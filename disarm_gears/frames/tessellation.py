@@ -67,12 +67,15 @@ class Tessellation:
             elif isinstance(attributes, np.ndarray):
                 if attributes.ndim == 1:
                     assert attributes.size == n_points, 'Attributes and points dimensions do not match.'
+                    n_attributes = 1
                     _region.update({'var_0:': attributes})
                 elif attributes.ndim == 2:
                     assert attributes.shape[0] == n_points, 'Attributes and points dimensions do not match.'
+                    n_attributes = attributes.shape[1]
                     _region.update({'var_%s:' %i: ai for i, ai in enumerate(attributes.T)})
                 else:
                     raise ValueError('attributes dimensions not understood.')
+                self.slice_attributes = slice(1, 1 + n_attributes)
 
             else:
                 ValueError('attributes type not understood.')
@@ -85,6 +88,10 @@ class Tessellation:
         # Bounding box
         box_ = np.asarray(_region['geometry'].bounds)
         self.box = pd.DataFrame({'x': box_[[0, 2]], 'y': box_[[1, 3]]})
+
+    def attributes_array(self):
+        #TODO add test
+        return np.array(self.region.iloc[:, self.slice_attributes])
 
 
     def locate(self, X):
