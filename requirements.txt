@@ -6,6 +6,7 @@ geopandas
 shapely >= 1.6.4
 GPyOpt
 matplotlib
+rtree
 
 # For tests
 nose
