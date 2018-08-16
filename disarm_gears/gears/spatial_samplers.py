@@ -145,4 +145,4 @@ class GPyOptSampler(SpatialSampler):
         '''Choose a location across domain to take a sample.'''
         self.model.run_optimization(**kwargs)
         self.X_optim = self.model.x_opt
-        self.X_optim = self.X_optim.ravel() if self.X_optim.size == 1 else self.X_optim.reshape(1, -1)
+        self.X_optim = self.X_optim.reshape(1, -1)
