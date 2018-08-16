@@ -7,7 +7,6 @@ class GaussianProcess:
 
     def __init__(self):
         '''General class for Gaussian process models.'''
-        pass
 
 
     def fit(self, y, X, weights=None, exposure=None, slice_s=None, slice_t=None, slice_f=None):
@@ -43,7 +42,6 @@ class GaussianProcess:
             validate_positive_array(weights)
             validate_integer_array(weights)
             weights = weights.astype(int)
-            y = np.hstack([np.repeat(yi, wi) for yi,wi in zip(y, weights)])
             self._Ex = self._expansion_matrix(weights=weights)
         self._weights = weights
         self._X_train = X
@@ -56,7 +54,11 @@ class GaussianProcess:
 
 
     def predict_mean_gp(self, X):
+        '''Predictive mean of the latent variable.
 
+        :param X: Input points for prediction.
+                  Numpy array, shape [n_data, ] or [n_data, n_dim].
+        '''
         if X.ndim == 1:
             X = np.array(X).reshape(-1, 1)
         validate_2d_array(X, n_cols=self.n_dim)
@@ -70,20 +72,26 @@ class GaussianProcess:
             L = scipy.linalg.cholesky(K_noise, lower=True)
             mu = np.dot(K_nm.T, scipy.linalg.solve(L.T, scipy.linalg.solve(L, self._y_train)))
         else:
+            y = np.hstack([np.repeat(yi, wi) for yi,wi in zip(self._y_train, self._weights)])
             KET = np.dot(self._Ex, K_nm).T
             L1 = scipy.linalg.cholesky(K + np.eye(self.n_data) * 1e-8, lower=True)
             L_inv = scipy.linalg.solve(L1, np.eye(self.n_data))
             K_inv = scipy.linalg.solve(L1.T, L_inv) * noise_var
             Q = scipy.linalg.cholesky(K_inv + np.dot(self._Ex.T, self._Ex), lower=True)
-            a = scipy.linalg.solve(Q.T, scipy.linalg.solve(Q, np.dot(self._Ex.T, self._y_train)))
-            mu = np.dot(KET, self._y_train) / noise_var - np.dot(KET, np.dot(self._Ex, a)) / noise_var
+            a = scipy.linalg.solve(Q.T, scipy.linalg.solve(Q, np.dot(self._Ex.T, y)))
+            mu = np.dot(KET, y) / noise_var - np.dot(KET, np.dot(self._Ex, a)) / noise_var
 
         return mu
 
 
     def predict_variance_gp(self, X, diagonal=True):
+        '''Predictive mean of the latent variable.
 
-
+        :param X: Input points for prediction.
+                  Numpy array, shape [n_data, ] or [n_data, n_dim].
+        :param diagonal: If true, only the diagonal elements of the covariance matrix are returned.
+                         Bool (default True).
+        '''
         if X.ndim == 1:
             X = np.array(X).reshape(-1, 1)
         validate_2d_array(X, n_cols=self.n_dim)
@@ -116,7 +124,13 @@ class GaussianProcess:
 
 
     def posterior_samples_gp(self, X, n_samples=100):
+        '''Posterior samples of the latent variable.
 
+        :param X: Input points for prediction.
+                  Numpy array, shape [n_data, ] or [n_data, n_dim].
+        :param n_samples: Number of samples to return.
+                          Positive integer.
+        '''
         mean = self.predict_mean_gp(X)
         Cov = self.predict_variance_gp(X, diagonal=False)
         samples = np.random.multivariate_normal(mean, Cov, size=n_samples)
@@ -149,20 +163,32 @@ class GaussianProcess:
 
 
     def log_likelihood(self):
-
+        '''Log-likelihood'''
         noise_var = np.exp(self._raw_noise_var)
         K = self._kernel_train()
-        K_noise = K + noise_var * np.eye(self.n_data)
-        D = scipy.linalg.det(K_noise)
-        L = scipy.linalg.cholesky(K_noise)
-        yLLiy = np.dot(self._y_train, scipy.linalg.solve(L, scipy.linalg.solve(L.T, self._y_train)))
 
-        # Weights
-        if self._weights is not None:
-            pass
-            #TODO
+        if self._weights is None:
+            N = self.n_data
+            K_noise = K + noise_var * np.eye(self.n_data)
+            log_D = np.log(scipy.linalg.det(K_noise))
+            L = scipy.linalg.cholesky(K_noise)
+            yLLiy = np.dot(self._y_train, scipy.linalg.solve(L, scipy.linalg.solve(L.T, self._y_train)))
+        else:
+            y = np.hstack([np.repeat(yi, wi) for yi,wi in zip(self._y_train, self._weights)])
+            N = np.sum(self._weights)
+            K += np.eye(self.n_data) * 1e-8
+            L1 = scipy.linalg.cholesky(K, lower=True)
+            L_inv = scipy.linalg.solve(L1, np.eye(self.n_data))
+            K_inv = scipy.linalg.solve(L1.T, L_inv)
+            ETE = np.dot(self._Ex.T, self._Ex)
+            Q = scipy.linalg.cholesky(K_inv * noise_var + ETE, lower=True)
+            log_D = N * np.log(noise_var) + np.log(scipy.linalg.det(K)) +\
+                    np.log(scipy.linalg.det(K_inv + ETE / noise_var))
+            ETy =  np.dot(self._Ex.T, y)
+            a = np.dot(ETy.T, scipy.linalg.solve(Q.T, scipy.linalg.solve(Q, ETy))) / noise_var
+            yLLiy = np.sum(y**2.) / noise_var - a
 
-        return - .5 * self.n_data * np.log(2 * np.pi) - .5 * np.log(D) - .5 * yLLiy
+        return - .5 * (N * np.log(2 * np.pi) - log_D - yLLiy)
 
 
     def _store_raw_inputs_dims(self, y, X, slice_s, slice_t, slice_f):
@@ -223,7 +249,7 @@ class GaussianProcess:
         self._raw_k_len = np.repeat(0, k_len_dim)
 
         # Noise parameter
-        self._raw_noise_var = -9.
+        self._raw_noise_var = 0#-9.
 
 
     def _distance2_X_train(self):
