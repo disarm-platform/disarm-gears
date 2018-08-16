@@ -45,20 +45,31 @@ class ClassificationPipeline(SupervisedLearningCore):
                 slice_f = slice(j, j + self.n_features)
             else:
                 slice_f = None
-        base_model.fit(y=y, X=X, weights=weights, slice_s=slice_s, slice_t=slice_t, slice_f=slice_f)
+            base_model.fit(y=y, X=X, weights=weights, slice_s=slice_s, slice_t=slice_t, slice_f=slice_f)
+        else:
+            raise NotImplementedError
 
         return base_model
 
 
-    def _predict_base_model(self, X, exposure=None):
+    def _predict_base_model(self, X, exposure=None, base_model=None):
         '''Call the prediction method of the base_model.'''
-        mu = self.base_model.predict(X)
+        base_model = self.base_model if base_model is None else base_model
+        if isinstance(base_model, PrevalenceModel):
+            mu = base_model.predict(X)
+        else:
+            raise NotImplementedError
 
         return mu
 
 
-    def _posterior_samples_base_model(self, X, exposure=None, n_samples=100):
+    def _posterior_samples_base_model(self, X, exposure=None, n_samples=100, base_model=None):
         '''Call the sampling method of the base_model.'''
+        base_model = self.base_model if base_model is None else base_model
+        if isinstance(base_model, PrevalenceModel):
+            samples = base_model.posterior_samples(X, n_samples=n_samples)
+        else:
+            raise NotImplementedError
 
-        return self.base_model.posterior_samples(X, n_samples=n_samples)
+        return samples
 
