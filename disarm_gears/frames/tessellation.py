@@ -4,7 +4,7 @@ import geopandas as geop
 from scipy.spatial import Voronoi
 from shapely import geometry
 from shapely.ops import polygonize
-from ..validators import validate_2d_array
+from disarm_gears.validators import validate_2d_array
 
 
 class Tessellation:

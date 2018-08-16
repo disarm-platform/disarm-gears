@@ -1,7 +1,7 @@
 import numpy as np
-from .supervised_learning_core import SupervisedLearningCore
-from ..util import binomial_to_bernoulli
-from ..gears import PrevalenceModel
+from disarm_gears.chain_drives import SupervisedLearningCore
+from disarm_gears.util import binomial_to_bernoulli
+from disarm_gears.gears import PrevalenceModel
 
 
 class ClassificationPipeline(SupervisedLearningCore):

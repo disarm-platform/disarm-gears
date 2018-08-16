@@ -1,8 +1,7 @@
-# TEMPORAL SOLUTION: FOR THE TIME BEING IT'S GOOD ENOUGH
-
 import numpy as np
-from .gaussian_process import GaussianProcess
+from disarm_gears.gears import GaussianProcess
 
+# TEMPORAL SOLUTION: for the time being this is good enough!!
 class PrevalenceModel(GaussianProcess):
 
     def __init__(self):

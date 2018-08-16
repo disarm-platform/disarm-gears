@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.preprocessing import StandardScaler, Normalizer
-from ..validators import *
+from disarm_gears.validators import *
 
 
 class SupervisedLearningCore(object):

@@ -1,6 +1,6 @@
 import numpy as np
 import scipy
-from ..validators import *
+from disarm_gears.validators import *
 
 
 class GaussianProcess:

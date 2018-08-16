@@ -1,1 +1,1 @@
-from .tessellation import Tessellation
+from disarm_gears.frames.tessellation import Tessellation

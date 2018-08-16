@@ -1,5 +1,5 @@
 import numpy as np
-from ..validators import *
+from disarm_gears.validators import *
 
 
 def binomial_to_bernoulli(n_positive, n_trials, X=None, aggregated=True):

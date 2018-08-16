@@ -1,1 +1,1 @@
-from .binomial_to_bernoulli import binomial_to_bernoulli
+from disarm_gears.util.binomial_to_bernoulli import binomial_to_bernoulli

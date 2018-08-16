@@ -1,3 +1,3 @@
-from .gaussian_process import GaussianProcess
-from .prevalence_model import PrevalenceModel
-from .spatial_samplers import SpatialSampler, RandomSampler, GridSearchSampler, GPyOptSampler
+from disarm_gears.gears.gaussian_process import GaussianProcess
+from disarm_gears.gears.prevalence_model import PrevalenceModel
+from disarm_gears.gears.spatial_samplers import *
