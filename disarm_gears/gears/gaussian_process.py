@@ -6,17 +6,35 @@ from ..validators import *
 class GaussianProcess:
 
     def __init__(self):
+        '''General class for Gaussian process models.'''
         pass
 
 
     def fit(self, y, X, weights=None, exposure=None, slice_s=None, slice_t=None, slice_f=None):
+        '''Fit a Gaussian process to y, X.
 
+        :param y: Response variable.
+                  Numpy array, shape [n_data, ].
+        :param X: GP inputs.
+                  Numpy array, shape [n_data, ] or [n_data, n_dim].
+        :param weights: Observation weights (optional).
+                        Numpy array, shape [n_data, ].
+        :param exposure: Exposure associated to the response variable (optional).
+                         Numpy array, shape [n_data, ].
+        :param slice_s: Column-slices that correspond to spatial coordinates (optional).
+                        Slice.
+        :param slice_t: Column-slices that correspond to a time reference (optional).
+                        Slice.
+        :param slice_f: Column-slices that correspond to features that are not space or time (optional).
+                        Slice.
+        '''
         # Check y, X dims
         validate_1d_array(y)
         if X.ndim == 1:
             X = np.array(X).reshape(-1, 1)
         validate_2d_array(X, n_rows=y.size)
 
+        assert len([si for si in [slice_s, slice_t, slice_f] if si is not None]) > 0
         self._store_raw_inputs_dims(y=y, X=X, slice_s=slice_s, slice_t=slice_t, slice_f=slice_f)
 
         # Weights
@@ -155,7 +173,7 @@ class GaussianProcess:
         self.n_dim = X.shape[1]
         self.spatial = False if slice_s is None else True
         self.temporal = False if slice_t is None else True
-        self.n_features = 0 if slice_f is None else len(list(range(*slice(self.n_dim))))
+        self.n_features = 0 if slice_f is None else len(list(range(*slice_f.indices(self.n_dim))))
 
         # Store slices
         if self.spatial:
@@ -202,7 +220,7 @@ class GaussianProcess:
             li += self.n_features
 
         self._raw_k_var = np.repeat(.7, k_var_dim)
-        self._raw_k_len = np.repeat(0, k_var_dim)
+        self._raw_k_len = np.repeat(0, k_len_dim)
 
         # Noise parameter
         self._raw_noise_var = -9.
@@ -279,10 +297,8 @@ class GaussianProcess:
 
 
     def _expansion_matrix(self, weights):
-        '''Returns a matrix to expand the kernel matrix of the trained data, based on a set of weights.'''
-
+        '''Returns a matrix to expand a covariance matrix  based on a set of weights.'''
         Ex = np.zeros([weights.sum(), weights.size])
-
         i = 0
         for j, wj in enumerate(weights):
             Ex[slice(i, i+wj), j] = 1
