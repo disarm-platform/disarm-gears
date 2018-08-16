@@ -172,6 +172,8 @@ class SLCSubclassTests(unittest.TestCase):
     def test_predict(self):
 
         pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
+
+        # Prediction without previous training
         self.assertRaises(AssertionError, pipeline1.predict, x_coords=_x_coords,
                           x_time=_x_time, x_features=_x_features, exposure=None)
 
@@ -186,6 +188,8 @@ class SLCSubclassTests(unittest.TestCase):
     def test_posterior_samples(self):
 
         pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
+
+        # Sampling without previous training
         self.assertRaises(AssertionError, pipeline1.posterior_samples, x_coords=_x_coords,
                           x_time=_x_time, x_features=_x_features, exposure=None)
 
