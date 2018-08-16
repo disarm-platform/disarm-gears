@@ -13,12 +13,12 @@ class SupervisedLearningCore(object):
         :param x_norm_gen: A callable object that instantiates a preprocessing method.
                            One of StandardScaler or Normalizer from scikit-learn.
         '''
-        assert callable(base_model_gen), 'Object is not callable'
+        assert callable(base_model_gen), 'Object is not callable.'
         self.new_base_model = base_model_gen
 
         # Define x normalizer
         if x_norm_gen is not None:
-            assert callable(x_norm_gen), 'Object is not callable'
+            assert callable(x_norm_gen), 'Object is not callable.'
             assert isinstance(x_norm_gen(), StandardScaler) or isinstance(x_norm_gen(), Normalizer)
             self.x_norm = True
             self.new_x_norm_rule = x_norm_gen
@@ -165,6 +165,21 @@ class SupervisedLearningCore(object):
         return target, X, weights, exposure
 
 
+    def _fit_base_model(self, y, X, weights, exposure):
+        '''Train a new instance of the base_model.'''
+        raise NotImplementedError
+
+
+    def _predict_base_model(self, X, exposure):
+        '''Call the prediction method of the base_model.'''
+        raise NotImplementedError
+
+
+    def _posterior_samples_base_model(self, X, exposure, n_samples):
+        '''Call the sampling method of the base_model.'''
+        raise NotImplementedError
+
+
     def fit(self, target, x_coords, x_time=None, x_features=None, n_trials=None, exposure=None, overwrite=True):
         '''
         Instantiate a base_model and train it.
@@ -185,6 +200,12 @@ class SupervisedLearningCore(object):
                           Otherwise the new trained base model is returned (default=True).
                           Boolean object.
         '''
+        if overwrite:
+            self.n_data = target.size
+
+        # Don't change dims if a frame has been set.
+        _overwrite_dims = False if hasattr(self, 'frame') else overwrite
+
         # Validate inputs
         self._validate_train_inputs_dims(target=target,
                                          x_coords=x_coords,
@@ -192,7 +213,7 @@ class SupervisedLearningCore(object):
                                          x_features=x_features,
                                          n_trials=n_trials,
                                          exposure=exposure,
-                                         overwrite=overwrite)
+                                         overwrite=_overwrite_dims)
 
         # Preprocess
         new_target = self._preprocess_target(target=target)
@@ -211,6 +232,10 @@ class SupervisedLearningCore(object):
         #TODO
 
         if overwrite:
+            self._X_train = X
+            self._y_train = y
+            self._weights = w
+            self._exposure = e
             self.base_model = new_base_model
         else:
             return new_base_model
@@ -280,16 +305,3 @@ class SupervisedLearningCore(object):
         return self._posterior_samples_base_model(X=X, exposure=exposure, n_samples=n_samples)
 
 
-    def _fit_base_model(self, y, X, weights, exposure):
-        '''Train a new instance of the base_model.'''
-        raise NotImplementedError
-
-
-    def _predict_base_model(self, X, exposure):
-        '''Call the prediction method of the base_model.'''
-        raise NotImplementedError
-
-
-    def _posterior_samples_base_model(self, X, exposure, n_samples):
-        '''Call the sampling method of the base_model.'''
-        raise NotImplementedError
