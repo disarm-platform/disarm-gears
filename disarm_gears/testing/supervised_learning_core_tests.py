@@ -83,34 +83,34 @@ class SupervisedLearningCoreTests(unittest.TestCase):
                                          x_features=_x_features)
         self.assertRaises(AssertionError, pipeline1._validate_prediction_inputs_dims,
                           x_coords=_new_x_coords, x_time=_new_x_time, x_features=None,
-                          exposure=None)
+                          exposure=None, n_trials=None)
         self.assertRaises(AssertionError, pipeline1._validate_prediction_inputs_dims,
                           x_coords=_new_x_coords, x_time=None, x_features=_new_x_features,
-                          exposure=None)
+                          exposure=None, n_trials=None)
         self.assertRaises(AssertionError, pipeline1._validate_prediction_inputs_dims,
                           x_coords=None, x_time=_x_time, x_features=_new_x_features,
-                          exposure=None)
+                          exposure=None, n_trials=None)
 
         # Not spatial
         pipeline1._store_raw_inputs_dims(target=_target,x_coords=None, x_time=_x_time,
                                          x_features=_x_features)
         self.assertRaises(AssertionError, pipeline1._validate_prediction_inputs_dims,
                           x_coords=_new_x_coords, x_time=_new_x_time, x_features=_new_x_features,
-                          exposure=None)
+                          exposure=None, n_trials=None)
 
         # Not temporal
         pipeline1._store_raw_inputs_dims(target=_target,x_coords=None, x_time=None,
                                          x_features=_x_features)
         self.assertRaises(AssertionError, pipeline1._validate_prediction_inputs_dims,
                           x_coords=None, x_time=_new_x_time, x_features=_new_x_features,
-                          exposure=None)
+                          exposure=None, n_trials=None)
 
         # No features
         pipeline1._store_raw_inputs_dims(target=_target,x_coords=_x_coords, x_time=_x_time,
                                          x_features=None)
         self.assertRaises(AssertionError, pipeline1._validate_prediction_inputs_dims,
                           x_coords=_new_x_coords, x_time=_new_x_time, x_features=_new_x_features,
-                          exposure=None)
+                          exposure=None, n_trials=None)
 
     def test_stack_x(self):
 
@@ -148,12 +148,12 @@ class SLCSubclassTests(unittest.TestCase):
     def test_init(self):
         pass
 
-    def test_build_yxwe(self):
+    def test_build_yxwen(self):
 
         pipeline1 = SLC(base_model_gen=lambda x:x, x_norm_gen=None)
-        output1 = pipeline1._build_yxwe(target=_target, X=np.ones_like(_target)[:,None],
-                                        n_trials=None, exposure=None)
-        self.assertEqual(len(output1), 4)
+        output1 = pipeline1._build_yxwen(target=_target, X=np.ones_like(_target)[:,None],
+                                        exposure=None, n_trials=None)
+        self.assertEqual(len(output1), 5)
         self.assertTrue(isinstance(output1[0], np.ndarray))
         self.assertTrue(output1[1] is None or isinstance(output1[1], np.ndarray))
         self.assertTrue(output1[2] is None or isinstance(output1[2], np.ndarray))
