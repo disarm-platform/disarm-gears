@@ -1,3 +1,2 @@
 from disarm_gears.chain_drives.supervised_learning_core import SupervisedLearningCore
-from disarm_gears.chain_drives.classification_pipeline import ClassificationPipeline
-#from disarm_gears.chain_drives.adaptive_sampling_pipeline import AdaptiveSamplingPipeline
+from disarm_gears.chain_drives.regression_drive import RegressionDrive
