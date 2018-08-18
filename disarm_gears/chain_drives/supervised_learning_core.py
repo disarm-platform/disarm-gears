@@ -34,8 +34,8 @@ class SupervisedLearningCore(object):
         self.n_features = 0 if x_features is None else x_features.shape[1]
 
 
-    def _validate_train_inputs_dims(self, target, x_coords, x_time, x_features, n_trials,
-                                    exposure, overwrite):
+    def _validate_train_inputs_dims(self, target, x_coords, x_time, x_features, exposure, n_trials,
+                                    overwrite):
         '''Assert the consistency of the inputs dimensions.'''
         validate_1d_array(target)
         size = target.size
@@ -56,11 +56,11 @@ class SupervisedLearningCore(object):
                 validate_2d_array(x_features, n_cols=None, n_rows=size)
 
         # Validate other arrays
-        if n_trials is not None:
-            validate_1d_array(n_trials, size=size)
-
         if exposure is not None:
             validate_1d_array(exposure, size=size)
+
+        if n_trials is not None:
+            validate_1d_array(n_trials, size=size)
 
         # Store data if requested
         if overwrite:
@@ -70,7 +70,7 @@ class SupervisedLearningCore(object):
                                         x_features=x_features)
 
 
-    def _validate_prediction_inputs_dims(self, x_coords, x_time, x_features, exposure):
+    def _validate_prediction_inputs_dims(self, x_coords, x_time, x_features, exposure, n_trials):
         '''Assert the consistency of a new set of inputs for predictions or posterior sampling.'''
         assert x_coords is not None or x_time is not None or x_features is not None
 
@@ -98,9 +98,12 @@ class SupervisedLearningCore(object):
         else:
             assert x_features is None
 
+        # Validate other arrays
         if exposure is not None:
             validate_1d_array(exposure, size=x_size)
 
+        if n_trials is not None:
+            validate_1d_array(n_trials, size=x_size)
 
     def _preprocess_target(self, target):
         '''Preprocessing of target values.'''
@@ -157,30 +160,32 @@ class SupervisedLearningCore(object):
         return X
 
 
-    def _build_yxwe(self, target, X, n_trials=None, exposure=None):
-        '''Build arrays: y, X, weights and exposure to pass to base models.'''
+    def _build_yxwen(self, target, X, exposure=None, n_trials=None):
+        '''Build arrays: y, X, weights, exposure and n_trials to pass to base models.'''
         weights = None
         exposure = exposure
+        n_trials = n_trials
 
-        return target, X, weights, exposure
+        return target, X, weights, exposure, n_trials
 
 
-    def _fit_base_model(self, y, X, weights, exposure):
+    def _fit_base_model(self, y, X, weights, exposure, n_trials):
         '''Train a new instance of the base_model.'''
         raise NotImplementedError
 
 
-    def _predict_base_model(self, X, exposure):
+    def _predict_base_model(self, X, exposure, n_trials):
         '''Call the prediction method of the base_model.'''
         raise NotImplementedError
 
 
-    def _posterior_samples_base_model(self, X, exposure, n_samples):
+    def _posterior_samples_base_model(self, X, exposure, n_trials, n_samples):
         '''Call the sampling method of the base_model.'''
         raise NotImplementedError
 
 
-    def fit(self, target, x_coords, x_time=None, x_features=None, n_trials=None, exposure=None, overwrite=True):
+    def fit(self, target, x_coords, x_time=None, x_features=None, exposure=None, n_trials=None,
+            overwrite=True):
         '''
         Instantiate a base_model and train it.
 
@@ -192,9 +197,9 @@ class SupervisedLearningCore(object):
                        Numpy array, shape [n_data, ]
         :param x_features: Additional variables/features associated to the target values (optional).
                            Numpy array, shape [n_data, ] or [n_data, n_features]
-        :param n_trials: For binomial models, number of trials associated to the target values (optional).
-                         Numpy array, shape [n_data, ]
         :param exposure: For count process models, exposure associated to the target values (optional).
+                         Numpy array, shape [n_data, ]
+        :param n_trials: For binomial models, number of trials associated to the target values (optional).
                          Numpy array, shape [n_data, ]
         :param overwrite: Whether previous training (if any) will be overwritten.
                           Otherwise the new trained base model is returned (default=True).
@@ -211,8 +216,8 @@ class SupervisedLearningCore(object):
                                          x_coords=x_coords,
                                          x_time=x_time,
                                          x_features=x_features,
-                                         n_trials=n_trials,
                                          exposure=exposure,
+                                         n_trials=n_trials,
                                          overwrite=_overwrite_dims)
 
         # Preprocess
@@ -223,10 +228,10 @@ class SupervisedLearningCore(object):
                                                overwrite=overwrite)
 
         # Build objects to pass to base model
-        y, X, w, e = self._build_yxwe(target=new_target, X=X, n_trials=n_trials, exposure=exposure)
+        y, X, w, e, n = self._build_yxwen(target=new_target, X=X, exposure=exposure, n_trials=n_trials)
 
         # Train model
-        new_base_model = self._fit_base_model(y=y, X=X, weights=w, exposure=e)
+        new_base_model = self._fit_base_model(y=y, X=X, weights=w, exposure=e, n_trials=n)
 
         # Add some summary
         #TODO
@@ -236,12 +241,13 @@ class SupervisedLearningCore(object):
             self._y_train = y
             self._weights = w
             self._exposure = e
+            self._n_trials = n
             self.base_model = new_base_model
         else:
             return new_base_model
 
 
-    def predict(self, x_coords=None, x_time=None, x_features=None, exposure=None):
+    def predict(self, x_coords=None, x_time=None, x_features=None, exposure=None, n_trials=None):
         '''
         Return the predictive mean for a set of new points.
 
@@ -261,17 +267,19 @@ class SupervisedLearningCore(object):
         self._validate_prediction_inputs_dims(x_coords=x_coords,
                                               x_time=x_time,
                                               x_features=x_features,
-                                              exposure=exposure)
+                                              exposure=exposure,
+                                              n_trials=n_trials)
 
         # Preprocess
         X = self._preprocess_prediction_x_variables(x_coords=x_coords,
                                                     x_time=x_time,
                                                     x_features=x_features)
 
-        return self._predict_base_model(X=X, exposure=exposure)
+        return self._predict_base_model(X=X, exposure=exposure, n_trials=n_trials)
 
 
-    def posterior_samples(self, x_coords=None, x_time=None, x_features=None, exposure=None, n_samples=100):
+    def posterior_samples(self, x_coords=None, x_time=None, x_features=None, exposure=None,
+                          n_trials=None, n_samples=100):
         '''
         Return samples from the posterior distribution.
 
@@ -292,7 +300,8 @@ class SupervisedLearningCore(object):
         self._validate_prediction_inputs_dims(x_coords=x_coords,
                                               x_time=x_time,
                                               x_features=x_features,
-                                              exposure=exposure)
+                                              exposure=exposure,
+                                              n_trials=n_trials)
 
         # Preprocess
         X = self._preprocess_prediction_x_variables(x_coords=x_coords,
@@ -302,6 +311,7 @@ class SupervisedLearningCore(object):
         assert isinstance(n_samples, int), 'Expecting a integer number of samples.'
         assert n_samples > 0, 'The number of samples has to be positive.'
 
-        return self._posterior_samples_base_model(X=X, exposure=exposure, n_samples=n_samples)
+        return self._posterior_samples_base_model(X=X, exposure=exposure, n_trials=n_trials,
+                                                  n_samples=n_samples)
 
 
