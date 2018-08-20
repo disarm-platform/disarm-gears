@@ -1,3 +1,3 @@
-from disarm_gears.gears.gpy_regression import GPyRegression
-from disarm_gears.gears.gpy_regression_proportions import GPyRegressionProportions
 from disarm_gears.gears.spatial_samplers import *
+from disarm_gears.gears.gpy_plugins import *
+from disarm_gears.gears.stan_plugins import *
