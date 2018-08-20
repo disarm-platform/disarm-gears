@@ -1,0 +1,1 @@
+from disarm_gears.gears.stan_plugins.gp_stan_regression import GPStanRegression
