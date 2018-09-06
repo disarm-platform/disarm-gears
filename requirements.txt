@@ -5,7 +5,8 @@ pandas
 geopandas
 shapely #>= 1.6.4
 matplotlib
-rtree
+libspatialindex == 1.7.0
+rtree == 0.7
 
 # For tests
 nose
