@@ -1,6 +1,9 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import cm, colors
 from sklearn.preprocessing import StandardScaler, Normalizer
 from disarm_gears.validators import *
+from disarm_gears.frames import PolygonsGeometry, Tessellation
 
 
 class SupervisedLearningCore(object):
@@ -13,7 +16,7 @@ class SupervisedLearningCore(object):
         :param x_norm_gen: A callable object that instantiates a preprocessing method.
                            One of StandardScaler or Normalizer from scikit-learn.
         '''
-        assert callable(base_model_gen), 'Object is not callable.'
+        #assert callable(base_model_gen), 'Object is not callable.'
         self.new_base_model = base_model_gen
 
         # Define x normalizer
@@ -32,6 +35,19 @@ class SupervisedLearningCore(object):
         self.spatial = False if x_coords is None else True
         self.temporal = False if x_time is None else True
         self.n_features = 0 if x_features is None else x_features.shape[1]
+
+        # Store X slices
+        j = 0
+        if self.spatial:
+            self._slice_s = slice(j, j + 2)
+            j += 2
+        if self.temporal:
+            self._slice_t = slice(j, j + 1)
+            j += 1
+        if self.n_features:
+            self._slice_f = slice(j, j + self.n_features)
+
+        self.n_dim = j + self.n_features
 
 
     def _validate_train_inputs_dims(self, target, x_coords, x_time, x_features, exposure, n_trials,
@@ -174,18 +190,18 @@ class SupervisedLearningCore(object):
         raise NotImplementedError
 
 
-    def _predict_base_model(self, X, exposure, n_trials):
+    def _predict_base_model(self, X, exposure, n_trials, phi):
         '''Call the prediction method of the base_model.'''
         raise NotImplementedError
 
 
-    def _posterior_samples_base_model(self, X, exposure, n_trials, n_samples):
+    def _posterior_samples_base_model(self, X, exposure, n_trials, n_samples, phi):
         '''Call the sampling method of the base_model.'''
         raise NotImplementedError
 
 
-    def fit(self, target, x_coords, x_time=None, x_features=None, exposure=None, n_trials=None,
-            overwrite=True):
+    def fit(self, target, x_coords, x_time=None, x_features=None, exposure=None,
+            n_trials=None, overwrite=True, **kwargs):
         '''
         Instantiate a base_model and train it.
 
@@ -231,7 +247,8 @@ class SupervisedLearningCore(object):
         y, X, w, e, n = self._build_yxwen(target=new_target, X=X, exposure=exposure, n_trials=n_trials)
 
         # Train model
-        new_base_model = self._fit_base_model(y=y, X=X, weights=w, exposure=e, n_trials=n)
+        new_base_model = self._fit_base_model(y=y, X=X, weights=w, exposure=e, n_trials=n,
+                                              **kwargs)
 
         # Add some summary
         #TODO
@@ -247,7 +264,8 @@ class SupervisedLearningCore(object):
             return new_base_model
 
 
-    def predict(self, x_coords=None, x_time=None, x_features=None, exposure=None, n_trials=None):
+    def predict(self, x_coords=None, x_time=None, x_features=None, exposure=None,
+                n_trials=None, phi=False):
         '''
         Return the predictive mean for a set of new points.
 
@@ -275,11 +293,11 @@ class SupervisedLearningCore(object):
                                                     x_time=x_time,
                                                     x_features=x_features)
 
-        return self._predict_base_model(X=X, exposure=exposure, n_trials=n_trials)
+        return self._predict_base_model(X=X, exposure=exposure, n_trials=n_trials, phi=phi)
 
 
     def posterior_samples(self, x_coords=None, x_time=None, x_features=None, exposure=None,
-                          n_trials=None, n_samples=100):
+                          n_trials=None, phi=False, n_samples=100):
         '''
         Return samples from the posterior distribution.
 
@@ -312,6 +330,54 @@ class SupervisedLearningCore(object):
         assert n_samples > 0, 'The number of samples has to be positive.'
 
         return self._posterior_samples_base_model(X=X, exposure=exposure, n_trials=n_trials,
-                                                  n_samples=n_samples)
+                                                  n_samples=n_samples, phi=phi)
 
 
+##TODO add tests
+
+    def set_spatial_frame(self, frame, **kwargs):
+        '''Define the spatial frame of the model.
+
+        :param frame_type: The spatial frame where the model is being implemented.
+                           A DiSARM frame object.
+        '''
+        assert isinstance(frame, PolygonsGeometry) or isinstance(frame, Tessellation),\
+            'Frame object not recognized.'
+        self.frame = frame
+
+
+    def show_map(self, ax=None, resolution=40, function=None, train_data=False):
+        #TODO handle time knots
+
+        assert hasattr(self, 'frame'), 'Maps not available if a frame has not been defined.'
+        assert hasattr(self, 'base_model'), 'There is no base_model available.'
+
+        if ax is None:
+            ax = self.frame._get_canvas()
+
+        gr = self.frame._get_geometry_grid(size=resolution)
+        x_grid = np.vstack([gi.ravel() for gi in gr]).T
+        ix = self.frame.locate(x_grid)
+        mask = ix > -1
+        map_size = mask.sum()
+
+        # Expand grid to match n_dim
+        if self.temporal or self.n_features > 0:
+            raise NotImplementedError
+
+        x_coords = x_grid[mask]
+
+
+        z = np.ones(mask.size) * -1000
+        z[mask] = self.predict(x_coords=x_coords)
+        za = z[mask].min()
+        zb = z[mask].max()
+        levels = np.linspace(za, zb, 20)
+
+        #cmap = cm.get_cmap('viridis')
+        #_normalize = colors.Normalize(vmin=za, vmax=zb)
+        #cols = [cmap(normalize(vi) for vi in z[mask])]
+
+        ax.contourf(gr[0], gr[1], z.reshape(gr[0].shape), levels=levels, cmap=plt.cm.viridis)
+
+        return ax
