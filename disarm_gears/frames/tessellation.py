@@ -5,6 +5,8 @@ from scipy.spatial import Voronoi
 from shapely import geometry
 from shapely.ops import polygonize
 from disarm_gears.validators import validate_2d_array
+from descartes import PolygonPatch
+import matplotlib.pyplot as plt
 
 
 class Tessellation:
@@ -90,8 +92,12 @@ class Tessellation:
         self.box = pd.DataFrame({'x': box_[[0, 2]], 'y': box_[[1, 3]]})
 
     def attributes_array(self):
-        #TODO add test
-        return np.array(self.region.iloc[:, self.slice_attributes])
+        '''Return an array of attributes associated to the region, if any.'''
+        if not hasattr(self, 'slice_attributes'):
+            _attr = None
+        else:
+            _attr = np.array(self.region.iloc[:, self.slice_attributes])
+        return _attr
 
 
     def locate(self, X):
@@ -110,3 +116,24 @@ class Tessellation:
         ix[np.isnan(ix)] = -1
 
         return np.array(ix).astype(int)
+
+
+    def plot(self, ax=None, color='gray', aspect='equal'):
+        '''Plot the region'''
+        #TODO add test
+        if ax is None:
+            ax = self._get_canvas(aspect=aspect)
+
+        for gi in self.region.geometry:
+            ax.add_patch(PolygonPatch(gi, color=color, alpha=.5))
+
+        return ax
+
+    def _get_canvas(self, aspect='equal'):
+        #TODO add test
+        ax = plt.subplot()
+        ax.set_xlim(self.box['x'])
+        ax.set_ylim(self.box['y'])
+        ax.set_aspect(aspect)
+        return ax
+
