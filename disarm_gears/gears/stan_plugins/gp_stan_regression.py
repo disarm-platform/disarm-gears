@@ -1,25 +1,29 @@
 import pystan
-from pathlib import Path
+from disarm_gears.gears.stan_plugins import stan_compilers
 from disarm_gears.validators import *
 
 
 class GPStanRegression:
 
-    def __init__(self):
+    def __init__(self, stan_models=None):
         '''
         This is a wrapper of a model implemented in pystan.
         See: https://mc-stan.org
         '''
-        self._compile_base()
+
+        if stan_models is not None:
+            assert len(stan_models) == 2, 'Expecting list or tuple of length 2.'
+            assert isinstance(stan_models[0], pystan.model.StanModel)
+            assert isinstance(stan_models[1], pystan.model.StanModel)
+            self.base_train, self.base_prediction = stan_models
+            self.base_train = stan_models[0]
+            self.base_prediction = stan_models[1]
+        else:
+            stan_models = self._compile_models()
 
 
-    def _compile_base(self):
-        train_script = 'disarm_gears/gears/stan_plugins/stan_scripts/gp_gaussian_fit_hyper.stan'
-        prediction_script = 'disarm_gears/gears/stan_plugins/stan_scripts/gp_gaussian_predict.stan'
-        assert Path(train_script).exists(), '%s not found.' %train_script
-        assert Path(prediction_script).exists(), '%s not found.' %prediction_script
-        self.base_train = pystan.StanModel(file=train_script)
-        self.base_prediction = pystan.StanModel(file=prediction_script)
+    def _compile_models(self):
+        return stan_compilers.gp_regression_compiler()
 
 
     def _make_train_dict(self, X, y, mu_prior, **kwargs):
@@ -39,10 +43,10 @@ class GPStanRegression:
 
 
     def fit(self, y, X, MAP=True, prior_mean_gp=None, n_iter=1000, chains=1, exposure=None,
-            **kwargs):
+            n_trials=None, **kwargs):
 
-        validate_1d_array(y)
-        validate_2d_array(X, n_rows=y.size, n_cols=None)
+        #validate_1d_array(y)
+        #validate_2d_array(X, n_rows=y.size, n_cols=None)
         assert isinstance(MAP, bool)
 
         self._y_train = y
@@ -56,7 +60,13 @@ class GPStanRegression:
             prior_mean_gp = np.zeros_like(y)
 
         # Data dictionary to pass to Stan
-        self.train_dict = self._make_train_dict(X=X, y=y, mu_prior=prior_mean_gp, exposure=exposure)
+        if exposure is None:
+            exposure = np.ones_like(y)
+        if n_trials is None:
+            n_trials = np.ones_like(y)
+
+        self.train_dict = self._make_train_dict(X=X, y=y, mu_prior=prior_mean_gp,
+                                                exposure=exposure, n_trials=n_trials)
 
         # Maximum a Posteriori or Sampling
         if MAP:
@@ -73,7 +83,8 @@ class GPStanRegression:
             self.params['cov_length'] = self.params['cov_length'].reshape(self.n_dim)
 
 
-    def predict(self, X, MAP=False, prior_mean_gp=None, exposure=None, n_iter=1000, chains=1, **kwargs):
+    def predict(self, X, MAP=False, prior_mean_gp=None, exposure=None, n_trials=None,
+                phi=False, n_iter=1000, chains=1, **kwargs):
         validate_2d_array(X, n_cols=self.n_dim)
         assert isinstance(MAP, bool), 'MAP must be boolean.'
 
@@ -83,21 +94,29 @@ class GPStanRegression:
         else:
             validate_1d_array(prior_mean_gp, size=X.shape[0])
 
+        # exposure and n_trials
+        if exposure is None:
+            exposure = np.ones(X.shape[0])
+        if n_trials is None:
+            n_trials = np.ones(X.shape[0])
+
         if not MAP:
             s = self.posterior_samples(X=X, n_samples=int(n_iter*.5), prior_mean_gp=prior_mean_gp,
+                                       exposure=exposure, n_trials=n_trials, phi=phi,
                                        n_iter=n_iter, chains=chains)
             m = s.mean(0)
         else:
             # Data dictionary to pass to Stan
-            pred_dict = self._make_pred_dict(X=X, mu_prior=prior_mean_gp, exposure=exposure)
+            pred_dict = self._make_pred_dict(X=X, mu_prior=prior_mean_gp, exposure=exposure,
+                                             n_trials=n_trials)
             base = self.base_prediction.optimizing(data=pred_dict)
-            m = base.get('y_pred')
+            m = base.get('phi_pred') if phi else base.get('y_pred')
 
         return m
 
 
-    def posterior_samples(self, X, n_samples=100, prior_mean_gp=None, exposure=None, n_iter=1000, chains=1,
-                          **kwargs):
+    def posterior_samples(self, X, n_samples=100, prior_mean_gp=None, exposure=None,
+                          n_trials=None, phi=True, n_iter=1000, chains=1, **kwargs):
         validate_2d_array(X, n_cols=self.n_dim)
         assert isinstance(n_samples, int), 'n_samples is expected to be an integer.'
         assert n_samples > 0, 'n_samples is expected to be a positive number.'
@@ -113,8 +132,14 @@ class GPStanRegression:
             validate_1d_array(prior_mean_gp, size=X.shape[0])
 
         # Data dictionary to pass to Stan
-        pred_dict = self._make_pred_dict(X=X, mu_prior=prior_mean_gp, new_exposure=exposure)
+        if exposure is None:
+            exposure = np.ones(X.shape[0])
+        if n_trials is None:
+            n_trials = np.ones(X.shape[0])
+        pred_dict = self._make_pred_dict(X=X, mu_prior=prior_mean_gp, exposure=exposure,
+                                         n_trials=n_trials)
         base = self.base_prediction.sampling(data=pred_dict, iter=n_iter, chains=chains)
-        s = base.extract()['y_pred']
+        s = base.extract()['phi_pred'] if phi else base.extract()['y_pred']
 
         return s[:n_samples, ]
+
