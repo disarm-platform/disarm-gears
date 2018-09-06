@@ -71,3 +71,16 @@ class TessellationTests(unittest.TestCase):
         self.assertEqual(ix.size, X.shape[0])
         self.assertEqual(ix[-1], -1)
         self.assertTrue((ix[:-1] - np.arange(5, 10) == 0).all())
+
+
+    def test_attributes_array(self):
+
+        sf_1 = Tessellation(points=g_points, attributes=None, crs=None)
+        self.assertIsNone(sf_1.attributes_array())
+
+        _attr = np.random.uniform(0, 100, g_points.size).reshape(-1, 2)
+        sf_1 = Tessellation(points=g_points, attributes=_attr, crs=None)
+        sf_attr = sf_1.attributes_array()
+        self.assertIsInstance(sf_attr, np.ndarray)
+        self.assertEqual(sf_attr.shape[0], _attr.shape[0])
+        self.assertEqual(sf_attr.shape[1], _attr.shape[1])
