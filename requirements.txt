@@ -3,10 +3,9 @@ scipy
 scikit-learn
 pandas
 geopandas
-shapely >= 1.6.4
+shapely #>= 1.6.4
 matplotlib
-libspatialindex == 1.8.5
-rtree == 0.8.2
+rtree
 
 # For tests
 nose
