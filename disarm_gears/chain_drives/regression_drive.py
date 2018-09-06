@@ -1,7 +1,7 @@
 import numpy as np
 from disarm_gears.chain_drives import SupervisedLearningCore
-from disarm_gears.gears import GPyRegression#, GPyRegressionProportions
 from disarm_gears.validators import *
+#from disarm_gears.gears import GPyRegression#, GPyRegressionProportions
 
 
 class RegressionDrive(SupervisedLearningCore):

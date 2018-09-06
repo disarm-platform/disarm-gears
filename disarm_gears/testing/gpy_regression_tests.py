@@ -1,3 +1,4 @@
+'''
 import unittest
 import numpy as np
 from disarm_gears.gears import GPyRegression
@@ -78,3 +79,5 @@ class GPyRegressionTests(unittest.TestCase):
 
         like = gp0._log_likelihood()
         self.assertIsInstance(like, float)
+
+'''

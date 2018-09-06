@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import cm, colors
 from sklearn.preprocessing import StandardScaler, Normalizer
 from disarm_gears.validators import *
-from disarm_gears.frames import PolygonsGeometry, Tessellation
+#from disarm_gears.frames import PolygonsGeometry, Tessellation
 
 
 class SupervisedLearningCore(object):
@@ -332,7 +332,7 @@ class SupervisedLearningCore(object):
         return self._posterior_samples_base_model(X=X, exposure=exposure, n_trials=n_trials,
                                                   n_samples=n_samples, phi=phi)
 
-
+"""
 ##TODO add tests
 
     def set_spatial_frame(self, frame, **kwargs):
@@ -381,3 +381,4 @@ class SupervisedLearningCore(object):
         ax.contourf(gr[0], gr[1], z.reshape(gr[0].shape), levels=levels, cmap=plt.cm.viridis)
 
         return ax
+"""

@@ -4,11 +4,7 @@ scikit-learn
 pandas
 geopandas
 shapely >= 1.6.4
-GPy
-GPyOpt
 matplotlib
-rtree #Not sure about this one
 
 # For tests
 nose
-
