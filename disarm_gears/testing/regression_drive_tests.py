@@ -19,6 +19,7 @@ def dummy_model(**kwargs):
 
 class ClassificationTests(unittest.TestCase):
 
+    @unittest.skip('skipping until stan models are pre-compiled')
     def test_init(self):
         self.assertRaises(NotImplementedError, RegressionDrive, base_model_gen=dummy_model)
 
@@ -32,7 +33,7 @@ class ClassificationTests(unittest.TestCase):
         self.assertIsInstance(output1[1], np.ndarray)
         self.assertTrue(output1[2] is None)
         self.assertTrue(output1[3] is None)
-        self.assertTrue(output1[4] is None)
+        self.assertTrue(output1[4] is not None)
 
     def test_fit(self):
 
