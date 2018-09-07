@@ -3,9 +3,10 @@ scipy
 scikit-learn
 pandas
 geopandas
-shapely #>= 1.6.4
+shapely
 matplotlib
 rtree
+pygam
 
 # For tests
 nose
