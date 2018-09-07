@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-__version__ = '.0.1.dev0'
+__version__ = '.0.1'
 
 setup(name = 'DisarmGears',
       version = __version__,
