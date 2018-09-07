@@ -4,6 +4,7 @@ scikit-learn
 pandas
 geopandas
 shapely
+descartes
 matplotlib
 rtree
 pygam
