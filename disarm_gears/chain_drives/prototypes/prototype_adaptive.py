@@ -6,26 +6,29 @@ from disarm_gears.frames import Tessellation
 from disarm_gears.validators import *
 
 
-def adaptive_prototype_0(x_coords, n_positive, n_trials, x_id=None, threshold=.5):
+def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials, threshold=.5):
 
     # Validate inputs
+    ## x_frame and x_id
+    validate_2d_array(x_frame, n_cols=2)
+    frame_size = x_frame.shape[0]
+    if x_id is None:
+        x_id = np.arange(frame_size)
+    else:
+        validate_1d_array(x_id, size=frame_size)
+    ## Training data
     validate_2d_array(x_coords, n_cols=2)
-    _size = x_coords.shape[0]
-    validate_1d_array(n_positive, size=_size)
+    train_size = x_coords.shape[0]
+    validate_1d_array(n_positive, size=train_size)
     validate_non_negative_array(n_positive)
     validate_integer_array(n_positive)
     validate_positive_array(n_trials)
     validate_integer_array(n_trials)
-    validate_1d_array(n_trials, size=_size)
+    validate_1d_array(n_trials, size=train_size)
     assert isinstance(threshold, float)
 
     # Define tessellation
-    if x_id is None:
-        x_id = np.arange(_size)
-    else:
-        validate_1d_array(x_id, size=_size)
-
-    ts = Tessellation(x_coords)
+    ts = Tessellation(x_frame)
     ts_export = {id: {'lng': zi.boundary.coords.xy[0].tolist(),
                       'lat': zi.boundary.coords.xy[1].tolist()}
                  for zi in ts.region.geometry for id in x_id}
@@ -41,7 +44,8 @@ def adaptive_prototype_0(x_coords, n_positive, n_trials, x_id=None, threshold=.5
     base_model.gridsearch(y=target, X=new_X, weights=weights)
 
     n_samples = 300
-    new_x_coords = trend_2nd_order(x_coords)
+    #new_x_coords = trend_2nd_order(x_coords)
+    new_x_coords = trend_2nd_order(x_frame)
     m_simulations = base_model.sample(X=new_X, y=target, weights=weights, sample_at_X=new_x_coords,
                                       quantity='mu', n_draws=n_samples)
 
