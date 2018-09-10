@@ -1,4 +1,5 @@
 import numpy as np
+import json
 import pygam
 from disarm_gears.util import binomial_to_bernoulli, trend_2nd_order
 from disarm_gears.frames import Tessellation
@@ -25,7 +26,8 @@ def adaptive_prototype_0(x_coords, n_positive, n_trials, x_id=None, threshold=.5
         validate_1d_array(x_id, size=_size)
 
     ts = Tessellation(x_coords)
-    ts_export = {id: {'lng': zi.boundary.coords.xy[0], 'lat': zi.boundary.coords.xy[1]}
+    ts_export = {id: {'lng': zi.boundary.coords.xy[0].tolist(),
+                      'lat': zi.boundary.coords.xy[1].tolist()}
                  for zi in ts.region.geometry for id in x_id}
 
 
@@ -50,7 +52,8 @@ def adaptive_prototype_0(x_coords, n_positive, n_trials, x_id=None, threshold=.5
     entropy = (- m_prob * np.log2(m_prob) - (1-m_prob) * np.log2(1 - m_prob))
     entropy[np.isnan(entropy)] = 0
 
-    m_export = {'id': x_id, 'prevalence': m_prev, 'category': m_category, 'entropy': entropy}
+    m_export = {'id': x_id.tolist(), 'prevalence': m_prev.tolist(), 'category': m_category.tolist(),
+                'entropy': entropy.tolist()}
 
     joint_output = {'polygons': ts_export, 'estimates': m_export}
 
