@@ -31,8 +31,7 @@ def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials, threshol
     ts = Tessellation(x_frame)
     ts_export = {id: {'lng': zi.boundary.coords.xy[0].tolist(),
                       'lat': zi.boundary.coords.xy[1].tolist()}
-                 for zi in ts.region.geometry for id in x_id}
-
+                 for zi, id in zip(ts.region.geometry, x_id)}
 
     # Preprocess data
     target, weights, X = binomial_to_bernoulli(n_positive=n_positive, n_trials=n_trials,
