@@ -10,7 +10,8 @@ import requests
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 
-def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials, threshold=.5):
+def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials,
+                         threshold=.5, covariate_layers = np.array([1, 4, 12, 15])):
 
     # Validate inputs
     ## x_frame and x_id
@@ -29,7 +30,10 @@ def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials, threshol
     validate_positive_array(n_trials)
     validate_integer_array(n_trials)
     validate_1d_array(n_trials, size=train_size)
+    ## Request parameters
     assert isinstance(threshold, float)
+    validate_1d_array(covariate_layers) #TODO: check covariates are valid
+
 
     # Define tessellation
     ts = Tessellation(x_frame)
@@ -42,9 +46,9 @@ def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials, threshol
     headers = {'Content-Type': 'application/json',
                'Authorization': 'Simple simlsA153Qc57VmTMdrtHo1nl1n1'}
     payload_frame = {'lng': x_frame[:, 0].tolist(), 'lat': x_frame[:, 1].tolist(),
-                     'layer_name': [1, 5]}
+                     'layer_name': covariate_layers.tolist()}
     payload_train = {'lng': x_coords[:, 0].tolist(), 'lat': x_coords[:, 1].tolist(),
-                     'layer_name': [1, 5]}
+                     'layer_name': covariate_layers.tolist()}
 
     algo_link = 'https://api.algorithmia.com/v1/algo/hughsturrock/covariate_extractor/0.1.2'
     algo_frame = requests.post(algo_link, data=json.dumps(payload_frame), headers=headers)
