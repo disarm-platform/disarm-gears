@@ -8,6 +8,7 @@ descartes
 matplotlib
 rtree
 pygam
+requests
 
 # For tests
 nose
