@@ -5,6 +5,10 @@ from disarm_gears.util import binomial_to_bernoulli, trend_2nd_order
 from disarm_gears.frames import Tessellation
 from disarm_gears.validators import *
 
+#To call Algorithmia
+import requests
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
 
 def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials, threshold=.5):
 
@@ -33,18 +37,45 @@ def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials, threshol
                       'lat': zi.boundary.coords.xy[1].tolist()}
                  for zi, id in zip(ts.region.geometry, x_id)}
 
+
+    # Find covariates
+    headers = {'Content-Type': 'application/json',
+               'Authorization': 'Simple simlsA153Qc57VmTMdrtHo1nl1n1'}
+    payload_frame = {'lng': x_frame[:, 0].tolist(), 'lat': x_frame[:, 1].tolist(),
+                     'layer_name': [1, 5]}
+    payload_train = {'lng': x_coords[:, 0].tolist(), 'lat': x_coords[:, 1].tolist(),
+                     'layer_name': [1, 5]}
+
+    algo_link = 'https://api.algorithmia.com/v1/algo/hughsturrock/covariate_extractor/0.1.2'
+    algo_frame = requests.post(algo_link, data=json.dumps(payload_frame), headers=headers)
+    algo_train = requests.post(algo_link, data=json.dumps(payload_train), headers=headers)
+
+    cov_frame = np.array(pd.DataFrame(algo_frame.json()['result'])).reshape(frame_size, -1)
+    cov_train = np.array(pd.DataFrame(algo_train.json()['result'])).reshape(train_size, -1)
+
     # Preprocess data
     target, weights, X = binomial_to_bernoulli(n_positive=n_positive, n_trials=n_trials,
                                                X=x_coords, aggregated=True)
-    new_X = trend_2nd_order(X)
+
+    # Fit ML models
+    _t, _w, ml_train_X = binomial_to_bernoulli(n_positive=n_positive, n_trials=n_trials,
+                                               X=cov_train, aggregated=True)
+
+
+    rf = RandomForestClassifier(max_depth=10, random_state=0)
+    rf.fit(X=ml_train_X, y=target)
+    ml_train = rf.predict_proba(ml_train_X)[:, 1:]
+    ml_frame = rf.predict_proba(cov_frame)[:, 1:]
+
+    new_X = np.hstack([trend_2nd_order(X), ml_train])
+
 
     # Train model
     base_model = pygam.LogisticGAM()
     base_model.gridsearch(y=target, X=new_X, weights=weights)
 
     n_samples = 300
-    #new_x_coords = trend_2nd_order(x_coords)
-    new_x_coords = trend_2nd_order(x_frame)
+    new_x_coords = np.hstack([trend_2nd_order(x_frame), ml_frame])
     m_simulations = base_model.sample(X=new_X, y=target, weights=weights, sample_at_X=new_x_coords,
                                       quantity='mu', n_draws=n_samples)
 
