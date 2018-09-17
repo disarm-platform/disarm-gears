@@ -153,8 +153,7 @@ def sentinel(end_date, dynamic_data, storage_path):
 
     if _surf:
         gam = pygam.PoissonGAM(pygam.s(0) + pygam.s(1) + pygam.s(2) + pygam.s(3) + pygam.s(4) +
-                               pygam.s(5) + pygam.s(6) + pygam.s(7) + pygam.s(8, by=9),
-                               lam=lspace[-1])
+                               pygam.s(5) + pygam.s(6) + pygam.s(7) + pygam.s(8, by=9), lam=100)
     else:
         gam = pygam.PoissonGAM(pygam.te(0, 1) + pygam.s(2) + pygam.s(3) +
                                pygam.s(4) + pygam.s(5) + pygam.s(6, by=7), lam=100.)
