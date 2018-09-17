@@ -105,7 +105,9 @@ class Tessellation:
         Identify in the tiles in which a set of points X are located.
 
         :param X: Set of coordinates.
-                  Numpy array, shape = [n, 2]
+                  Numpy array, shape = [n, 2].
+        :return: Array with tiles per point (-1 for points outside the spatial frame).
+                 Numpy array of integers.
         '''
         # Validate input
         validate_2d_array(X, n_cols=2)
