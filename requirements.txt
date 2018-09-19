@@ -9,7 +9,7 @@ matplotlib
 rtree
 pygam
 requests
-gdal
+pygdal
 
 # For tests
 nose
