@@ -1,4 +1,4 @@
-pygdal == 1.10.1 --global-option=build_ext --global-option="-I/usr/include/gdal"
+gdal
 numpy >= 1.14.2
 scipy
 scikit-learn
