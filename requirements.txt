@@ -9,7 +9,7 @@ matplotlib
 rtree
 pygam
 requests
-pygdal
+pygdal==1.11.3.3
 
 # For tests
 nose
