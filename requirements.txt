@@ -9,7 +9,7 @@ matplotlib
 rtree
 pygam
 requests
-pygdal == 1.10.1
+pygdal == $(gdal-config --version) --global-option=build_ext --global-option="-I/usr/include/gdal"
 
 # For tests
 nose
