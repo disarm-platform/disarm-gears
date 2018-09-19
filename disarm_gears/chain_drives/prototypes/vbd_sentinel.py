@@ -19,10 +19,10 @@ def dchs(hs_centroid, hs_size, X):
     return np.exp(-np.min(dist, axis=1)), hs_size[argm]
 
 
-def sentinel(end_date, dynamic_data, storage_path):
+def sentinel(end_date, dynamic_data, storage_path, obsv_knots=6):
     '''Forecast incidence of malaria per village.'''
     # Define timeframe
-    tf_obsv = Timeframe(start=None, end=end_date, length=6, by='day', step=28)
+    tf_obsv = Timeframe(start=None, end=end_date, length=obsv_knots, by='day', step=28)
     tf = Timeframe(start=tf_obsv.start, length=7, by='day', step=28)
     max_knot = tf.knots_info['knot'].max()
 
