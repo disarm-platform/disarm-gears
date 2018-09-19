@@ -9,7 +9,7 @@ matplotlib
 rtree
 pygam
 requests
-osgeo
+gdal
 
 # For tests
 nose
