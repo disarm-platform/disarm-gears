@@ -6,7 +6,7 @@ cache:
         directories:
                 - $HOME/.ccache
 env:
-        - BUILD_NAME=python3
+        - BUILD_NAME=python3.6
         - DETAILS=""
 
 
