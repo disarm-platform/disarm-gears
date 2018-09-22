@@ -1,24 +1,16 @@
 language: python
 python:
-        - "3.6"
-cache:
-        apt: true
-        directories:
-                - $HOME/.ccache
-env:
-        - BUILD_NAME=python3.6
-        - DETAILS=""
-
+          - "3.6"
 
 before_install:
-        - ./gdal/ci/travis/${BUILD_NAME}/install.sh
-        - sudo apt-get install -y libspatialindex-dev
-        - sudo apt-get install -y libgdal1-dev
-        - ./gdal/ci/travis/${BUILD_NAME}/before_install.sh 
+          - sudo apt-get install -y libspatialindex-dev
+          - sudo apt-get install -y libgdal1-dev
+          - sudo apt-get install -y python3-dev
+          - sudo apt-get install -y python3-gdal
 
 cache: pip
 install:
-        - pip install -r requirements.txt
+          - pip install -r requirements.txt
 script:
-        - python travis_tests.py
+          - python travis_tests.py
 
