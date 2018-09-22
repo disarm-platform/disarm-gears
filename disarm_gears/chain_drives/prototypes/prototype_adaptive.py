@@ -10,8 +10,12 @@ import requests
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 
+
 def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials,
-                         threshold=.5, covariate_layers=np.array([1, 4, 12, 15])):
+                         threshold=.5, covariate_layers=np.array([1, 4, 12, 15]), random_seed=123):
+
+    # Set random seed
+    np.random.seed(random_seed)
 
     # Validate inputs
     ## x_frame and x_id

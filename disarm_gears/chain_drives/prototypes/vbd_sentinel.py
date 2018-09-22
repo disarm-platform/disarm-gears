@@ -19,8 +19,12 @@ def dchs(hs_centroid, hs_size, X):
     return np.exp(-np.min(dist, axis=1)), hs_size[argm]
 
 
-def sentinel(end_date, dynamic_data, storage_path, obsv_knots=6):
+def sentinel(end_date, dynamic_data, storage_path, obsv_knots=6, random_seed=123):
     '''Forecast incidence of malaria per village.'''
+
+    # Set random seed
+    np.random.seed(random_seed)
+
     # Define timeframe
     tf_obsv = Timeframe(start=None, end=end_date, length=obsv_knots, by='day', step=28)
     tf = Timeframe(start=tf_obsv.start, length=7, by='day', step=28)
