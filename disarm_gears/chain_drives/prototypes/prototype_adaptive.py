@@ -17,9 +17,6 @@ def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials,
     # Set random seed
     np.random.seed(random_seed)
 
-    # Class cutoff
-    cutoff = .5
-
     # Validate inputs
     ## x_frame and x_id
     validate_2d_array(x_frame, n_cols=2)
@@ -95,11 +92,12 @@ def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials,
     n_samples = 300
     m_simulations = base_model.sample(X=new_X, y=target, weights=weights, sample_at_X=new_x_coords,
                                       quantity='mu', n_draws=n_samples)
-    m_prev = m_simulations.mean(0)
+    #m_prev = m_simulations.mean(0)
+    m_prev = base_model.predict_mu(new_x_coords)
     m_prob = (m_simulations > threshold).sum(0) / n_samples
     m_category = np.zeros_like(m_prob)
 
-    m_category[m_prev > cutoff] = 1
+    m_category[m_prev > threshold] = 1
     entropy = (- m_prob * np.log2(m_prob) - (1-m_prob) * np.log2(1 - m_prob))
     entropy[np.isnan(entropy)] = 0
 
