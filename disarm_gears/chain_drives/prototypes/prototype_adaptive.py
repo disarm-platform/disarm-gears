@@ -95,13 +95,16 @@ def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials,
     #m_prev = m_simulations.mean(0)
     m_prev = base_model.predict_mu(new_x_coords)
     m_prob = (m_simulations > threshold).sum(0) / n_samples
-    m_category = np.zeros_like(m_prob)
 
+    m_category = np.zeros_like(m_prob)
     m_category[m_prev > threshold] = 1
+
     entropy = (- m_prob * np.log2(m_prob) - (1-m_prob) * np.log2(1 - m_prob))
     entropy[np.isnan(entropy)] = 0
 
-    m_export = {'id': x_id.tolist(), 'prevalence': m_prev.tolist(), 'category': m_category.tolist(),
+    #m_export = {'id': x_id.tolist(), 'prevalence': m_prev.tolist(), 'category': m_category.tolist(),
+    #            'entropy': entropy.tolist()}
+    m_export = {'id': x_id.tolist(), 'exceedance_prob': m_prob.tolist(), 'category': m_category.tolist(),
                 'entropy': entropy.tolist()}
 
     joint_output = {'polygons': ts_export, 'estimates': m_export}
