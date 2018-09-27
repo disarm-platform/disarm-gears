@@ -56,6 +56,9 @@ def sentinel(end_date, dynamic_data, storage_path, obsv_knots=6, random_seed=123
         with open(str(efile.resolve()), 'rb') as f:
             _elevation = pickle.load(f)
     else:
+        raise NotImplementedError
+        '''
+        # NOTE this requiers Geometry to have raster_to_frame method implemented
         efile = Path(storage_path, 'tha_elevation.tif')
         assert efile.is_file(), 'Raster file with elevation could not be found.'
         _elevation = rv.raster_to_frame(gdal.Open(str(efile.resolve())), thresholds=[-100, None],
@@ -63,6 +66,7 @@ def sentinel(end_date, dynamic_data, storage_path, obsv_knots=6, random_seed=123
         # Save binary
         with open(storage_path + 'tha_elevation.file', 'wb') as f:
             pickle.dump(_elevation, f, pickle.HIGHEST_PROTOCOL)
+        '''
 
     # Merge static data into the same dataframe
     sfile = Path(storage_path, 'tha_static.csv')
@@ -161,35 +165,38 @@ def sentinel(end_date, dynamic_data, storage_path, obsv_knots=6, random_seed=123
     else:
         gam = pygam.PoissonGAM(pygam.te(0, 1) + pygam.s(2) + pygam.s(3) +
                                pygam.s(4) + pygam.s(5) + pygam.s(6, by=7), lam=100.)
+    #gam.gridsearch(X=X_obsv, y=y_obsv, exposure=exposure_obsv,
+    #               lam=np.logspace(1, 3, 3), n_splines=np.arange(20, 100, 20))
     gam.fit(X=X_obsv, y=y_obsv, exposure=exposure_obsv)
 
-    samples_fore = gam.sample(X=X_obsv, y=y_obsv, sample_at_X=X_fore, n_draws=n_samples)
+    #samples_fore = gam.sample(X=X_obsv, y=y_obsv, sample_at_X=X_fore, quantity='mu', n_draws=n_samples)
 
     # Forecast mean
     incidence_hat = gam.predict(X_fore)
 
     # Exceedance prob
     incidence_past = gam.predict(X_past)
-    exceedance_prob = np.sum(samples_fore - incidence_past > 0, axis=0) / n_samples
+    #exceedance_prob = np.sum(samples_fore - incidence_past > 0, axis=0) / n_samples
 
     # Classificatons
     incidence_perc = np.percentile(incidence_hat, q=[50., 75., 90., 95.])
-    exceedance_perc = np.percentile(exceedance_prob, q=[50., 75., 90., 95.])
+    #exceedance_perc = np.percentile(exceedance_prob, q=[50., 75., 90., 95.])
 
     incidence_class = np.zeros_like(incidence_hat)
-    exceedance_class = np.zeros_like(incidence_hat)
+    #exceedance_class = np.zeros_like(incidence_hat)
 
     for i in range(4):
         incidence_class[incidence_hat > incidence_perc[i]] = i + 1
-        exceedance_class[exceedance_prob > exceedance_perc[i]] = i + 1
+    #    exceedance_class[exceedance_prob > exceedance_perc[i]] = i + 1
 
     XY_obsv = XY.loc[mask_obsv]
     XY_obsv.loc[:, 'total_incidence'] = gam.predict(X_obsv)
     XY_fore = XY.loc[mask_fore]
     XY_fore.loc[:, 'total_incidence'] = incidence_hat
-    XY_fore.loc[:, 'exceedance_prob'] = exceedance_prob
+    #XY_fore.loc[:, 'exceedance_prob'] = exceedance_prob
     XY_fore.loc[:, 'total_incidence_class'] = incidence_class
-    XY_fore.loc[:, 'exceedance_class'] = exceedance_class
-
+    #XY_fore.loc[:, 'exceedance_class'] = exceedance_class
+    
     return XY_obsv, XY_fore, gam
+    #return X_obsv, y_obsv, X_fore, gam
 
