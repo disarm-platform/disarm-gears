@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 import pandas as pd
 import geopandas as geop
-import gdal
+#import gdal
 import pygam
 from disarm_gears.frames import Geometry, Timeframe
 from sklearn.cluster import DBSCAN
