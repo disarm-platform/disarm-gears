@@ -8,9 +8,8 @@ from descartes import PolygonPatch
 from functools import partial
 import pyproj
 from shapely.ops import transform
-from disarm_gears.frames import RasterImage
-
-from sklearn.tree import DecisionTreeRegressor
+#from disarm_gears.frames import RasterImage
+#from sklearn.tree import DecisionTreeRegressor
 
 
 class Geometry:
@@ -116,7 +115,8 @@ class Geometry:
 
 
     def raster_to_frame(self, raster, thresholds=[None, None], fun='mean', fill_missing=False):
-
+        raise NotImplementedError
+        '''
         rr = RasterImage(image=raster, thresholds=thresholds)
         X = rr.get_coordinates(filter=True)
         y = rr.region.ReadAsArray().flatten()
@@ -145,7 +145,7 @@ class Geometry:
                 z.sort_index(inplace=True)
 
         return z
-
+        '''
 
     def plot(self, ax=None, color='gray', aspect='equal'):
 
