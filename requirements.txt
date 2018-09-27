@@ -1,7 +1,7 @@
 numpy
 scipy
 scikit-learn
-pandas
+pandas >= 0.22.0
 geopandas
 shapely
 descartes
