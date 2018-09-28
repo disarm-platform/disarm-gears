@@ -5,6 +5,12 @@ disarm_gears/__init__.py
 disarm_gears/chain_drives/__init__.py
 disarm_gears/chain_drives/regression_drive.py
 disarm_gears/chain_drives/supervised_learning_core.py
+disarm_gears/chain_drives/prototypes/__init__.py
+disarm_gears/chain_drives/prototypes/adaptive_sampling.py
+disarm_gears/chain_drives/prototypes/classification.py
+disarm_gears/chain_drives/prototypes/logistic_regression_drive.py
+disarm_gears/chain_drives/prototypes/prototype_adaptive.py
+disarm_gears/chain_drives/prototypes/vbd_sentinel.py
 disarm_gears/frames/__init__.py
 disarm_gears/frames/geometry.py
 disarm_gears/frames/raster_image.py
