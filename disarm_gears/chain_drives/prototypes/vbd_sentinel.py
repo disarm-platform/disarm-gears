@@ -19,7 +19,7 @@ def dchs(hs_centroid, hs_size, X):
     return np.exp(-np.min(dist, axis=1)), hs_size[argm]
 
 
-def sentinel(end_date, dynamic_data, storage_path, obsv_knots=6, random_seed=123):
+def sentinel(end_date, dynamic_data, storage_path, obsv_knots=2, random_seed=123):
     '''Forecast incidence of malaria per village.'''
 
     # Set random seed
@@ -27,7 +27,7 @@ def sentinel(end_date, dynamic_data, storage_path, obsv_knots=6, random_seed=123
 
     # Define timeframe
     tf_obsv = Timeframe(start=None, end=end_date, length=obsv_knots, by='day', step=28)
-    tf = Timeframe(start=tf_obsv.start, length=7, by='day', step=28)
+    tf = Timeframe(start=tf_obsv.start, length=obsv_knots+1, by='day', step=28)
     max_knot = tf.knots_info['knot'].max()
 
     ## Static data processing
@@ -134,7 +134,7 @@ def sentinel(end_date, dynamic_data, storage_path, obsv_knots=6, random_seed=123
     mask_obsv = XY['knot'] < max_knot
     mask_fore = XY['knot'] == max_knot
     mask_past = XY['knot'] == max_knot - 1
-    _surf = False
+    _surf = True
     if _surf:
         gps = ['lng', 'lat']
         covariates = ['elevation', 'itn', 'irs', 'imported_cases', 'hs_distance', 'hs_size']
