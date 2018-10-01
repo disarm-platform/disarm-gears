@@ -3,6 +3,7 @@ import json
 import pygam
 from disarm_gears.util import binomial_to_bernoulli, trend_2nd_order
 from disarm_gears.frames import Tessellation
+from disarm_gears.util import bubbles
 from disarm_gears.validators import *
 
 #To call Algorithmia
@@ -41,10 +42,14 @@ def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials,
         validate_1d_array(covariate_layers) #TODO: check covariates are valid
 
     # Define tessellation
-    ts = Tessellation(x_frame)
-    ts_export = {id: {'lng': zi.boundary.coords.xy[0].tolist(),
-                      'lat': zi.boundary.coords.xy[1].tolist()}
-                 for zi, id in zip(ts.region.geometry, x_id)}
+    #ts = Tessellation(x_frame)
+    #ts_export = {id: {'lng': zi.boundary.coords.xy[0].tolist(),
+    #                  'lat': zi.boundary.coords.xy[1].tolist()}
+    #             for zi, id in zip(ts.region.geometry, x_id)}
+
+    bs = bubbles(x_frame, radius=.045, n_points=16)
+    ts_export = {id: {'lng': bi[:, 0].tolist(), 'lat': bi[:, 1].tolist()}
+                 for bi, id in zip(bs, x_id)}
 
     # Preprocess data
     target, weights, X = binomial_to_bernoulli(n_positive=n_positive, n_trials=n_trials,
