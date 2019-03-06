@@ -1,0 +1,14 @@
+numpy
+scipy
+scikit-learn
+pandas >= 0.22.0
+geopandas
+shapely
+descartes
+matplotlib
+rtree
+pygam
+requests
+
+# For tests
+nose
