@@ -68,25 +68,10 @@ def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials,
         new_x_coords = trend_2nd_order(x_frame)
 
     else:
-        '''
-        headers = {'Content-Type': 'application/json',
-                   'Authorization': 'Simple simlsA153Qc57VmTMdrtHo1nl1n1'}
-        payload_frame = {'lng': x_frame[:, 0].tolist(), 'lat': x_frame[:, 1].tolist(),
-                         'layer_name': covariate_layers.tolist()}
-        payload_train = {'lng': x_coords[:, 0].tolist(), 'lat': x_coords[:, 1].tolist(),
-                         'layer_name': covariate_layers.tolist()}
-
-        algo_link = 'https://api.algorithmia.com/v1/algo/hughsturrock/covariate_extractor/0.1.2'
-        algo_frame = requests.post(algo_link, data=json.dumps(payload_frame), headers=headers)
-        algo_train = requests.post(algo_link, data=json.dumps(payload_train), headers=headers)
-        
-        cov_frame = np.array(pd.DataFrame(algo_frame.json()['result'])).reshape(frame_size, -1)
-        cov_train = np.array(pd.DataFrame(algo_train.json()['result'])).reshape(train_size, -1)
-        '''
         layer_names = ['bioclim%s' %j for j in covariate_layers]
         layer_names += ['elev_m', 'dist_to_water_m']
-        x_frame_js = df_to_geojson(pd.DataFrame(x_frame, columns=['lng' 'lat']), layer_names=layer_names)
-        x_train_js = df_to_geojson(pd.DataFrame(x_coords, columns=['lng' 'lat']), layer_names=layer_names)
+        x_frame_js = df_to_geojson(pd.DataFrame(x_frame, columns=['lng', 'lat']), layer_names=layer_names)
+        x_train_js = df_to_geojson(pd.DataFrame(x_coords, columns=['lng', 'lat']), layer_names=layer_names)
         algo_link = 'http://faas.srv.disarm.io/function/fn-covariate-extractor'
         algo_frame = requests.post(algo_link, data=json.dumps(x_frame_js))
         algo_train = requests.post(algo_link, data=json.dumps(x_train_js))
@@ -112,9 +97,10 @@ def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials,
     base_model = pygam.LogisticGAM()
     base_model.gridsearch(y=target, X=new_X, weights=weights)
 
-    n_samples = 300
+    n_samples = 200
     m_simulations = base_model.sample(X=new_X, y=target, weights=weights, sample_at_X=new_x_coords,
                                       quantity='mu', n_draws=n_samples)
+
     #m_prev = m_simulations.mean(0)
     m_prev = base_model.predict_mu(new_x_coords)
     m_prob = (m_simulations > threshold).sum(0) / n_samples
