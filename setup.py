@@ -16,5 +16,5 @@ setup(name = "DisarmGears",
                   "disarm_gears.testing",
                   "disarm_gears.validators"],
       license = open("LICENSE").read(),
-      long_description = open("README").read(),
+      long_description = open("README.md").read(),
       )
