@@ -1,6 +1,8 @@
 import numpy as np
 import json
 import pygam
+
+from disarm_gears import config
 from disarm_gears.util import binomial_to_bernoulli, trend_2nd_order
 from disarm_gears.frames import Tessellation
 from disarm_gears.validators import *
@@ -72,7 +74,7 @@ def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials,
         layer_names += ['elev_m', 'dist_to_water_m']
         x_frame_js = df_to_geojson(pd.DataFrame(x_frame, columns=['lng', 'lat']), layer_names=layer_names)
         x_train_js = df_to_geojson(pd.DataFrame(x_coords, columns=['lng', 'lat']), layer_names=layer_names)
-        algo_link = 'https://faas.srv.disarm.io/function/fn-covariate-extractor'
+        algo_link = config.faas_endpoint
         algo_frame = requests.post(algo_link, data=json.dumps(x_frame_js))
         algo_train = requests.post(algo_link, data=json.dumps(x_train_js))
         cov_frame = np.vstack([[js['properties'][k] for k in layer_names] for js in algo_frame.json()['result']['features']])
