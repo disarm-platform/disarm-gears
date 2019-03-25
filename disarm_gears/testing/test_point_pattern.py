@@ -95,15 +95,21 @@ def test_attributes_array():
 
 def test_set_boundary():
 
-    sf_0 = PointPattern(points=pd.DataFrame(g_points), attributes=None, crs=None)
+    sf_1 = PointPattern(points=g_points, attributes=g_attrib_1, crs=None)
     with pytest.raises(AssertionError):
-        sf_0.set_boundary(B=B.geometry[0])
-    sf_0.set_boundary(B=B)
-    assert isinstance(sf_0.boundary, geop.GeoDataFrame)
-    assert sf_0.box.loc[0, 'x'] == 0.2
-    assert sf_0.box.loc[1, 'x'] == 0.7
-    assert sf_0.box.loc[0, 'y'] == 0.3
-    assert sf_0.box.loc[1, 'y'] == 0.8
+        sf_1.set_boundary(B=B.geometry[0])
+    sf_1.set_boundary(B=B)
+    assert isinstance(sf_1.boundary, geop.GeoDataFrame)
+    assert sf_1.box.loc[0, 'x'] == 0.2
+    assert sf_1.box.loc[1, 'x'] == 0.7
+    assert sf_1.box.loc[0, 'y'] == 0.3
+    assert sf_1.box.loc[1, 'y'] == 0.8
+
+    sf_2 = PointPattern(points=g_points, attributes=g_attrib_1, crs=None)
+    sf_2.set_boundary(B2)
+    assert isinstance(sf_2.boundary, geop.GeoDataFrame)
+
+    assert sf_1.region.shape[0] < sf_2.region.shape[0]
 
 
 def test_make_grid():
@@ -117,11 +123,6 @@ def test_make_grid():
     sf_0.set_boundary(B)
     G1 = sf_0.make_grid(resolution=(8, 5), bounded=True)
     assert G0.shape[0] > G1.shape[0]
-
-    sf_2 = PointPattern(points=g_points, attributes=g_attrib_1, crs=None)
-    sf_2.set_boundary(B2)
-    #G1 = sf_0.make_grid(resolution=(8, 5), bounded=True)
-    #assert G0.shape[0] > G1.shape[0]
 
 
 def test_make_attribute_series():
@@ -137,13 +138,3 @@ def test_make_attribute_series():
     assert np.all([ni in new_geop.columns for ni in sf_3.attributes_names])
     assert 'new_var' in new_geop.columns
 
-
-#def test_locate():
-#
-#    sf_1 = PointPattern(points=g_points, attributes=None, crs=None)
-#    ix = sf_1.locate(X=X)
-#    isinstance(ix, np.ndarray)
-#    ix.ndim == 1
-#    ix.size == X.shape[0]
-#    ix[-1] == -1
-#    (ix[:-1] - np.arange(5, 10) == 0).all()
