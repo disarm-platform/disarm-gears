@@ -1,11 +1,8 @@
 import numpy as np
 import pandas as pd
-import geopandas as geop
+import geopandas
 from shapely import geometry
-from descartes import PolygonPatch
 from disarm_gears.validators import validate_2d_array, validate_1d_array
-import matplotlib.pyplot as plt
-#TODO test
 
 
 class PointPattern:
@@ -40,12 +37,12 @@ class PointPattern:
         # Define region as GeoDataFrame
         self.centroids = points
         self.projection = crs
-        self.region = geop.GeoDataFrame(_region, crs=self.projection)
+        self.region = geopandas.GeoDataFrame(_region, crs=self.projection)
         self.region.index.name = None
 
         # Bounding box
-        box_ = np.asarray(geometry.MultiPoint(points).bounds)
-        self.box = pd.DataFrame({'x': box_[[0, 2]], 'y': box_[[1, 3]]})
+        _box = np.asarray(geometry.MultiPoint(points).bounds)
+        self.box = pd.DataFrame({'x': _box[[0, 2]], 'y': _box[[1, 3]]})
 
 
     def _add_attributes(self, region_dict, attributes):
@@ -97,7 +94,7 @@ class PointPattern:
         :param B: Polygon(s) that define the region.
                   Geopandas DataFrame.
         '''
-        assert isinstance(B, geop.GeoDataFrame)
+        assert isinstance(B, geopandas.GeoDataFrame)
         ix = np.repeat(False, self.region.shape[0])
         for i, pi in enumerate(self.region.geometry):
             for bj in B.geometry:
@@ -137,7 +134,6 @@ class PointPattern:
         return G
 
 
-
     def make_attributes_series(self, knots, var_name='knot'):
         '''Make a (time) series of attributes, by repeating them along the knots.'''
         assert isinstance(var_name, str), 'var_name must be a string object.'
@@ -150,7 +146,11 @@ class PointPattern:
         return a_series
 
 
+    #TODO def raster_to_frame(self, raster, buffer, fun='mean', fill_method=None):
     '''
+    from descartes import PolygonPatch
+    import matplotlib.pyplot as plt
+    
     def plot_boundary(self, ax=None, color='gray', aspect='equal'):
 
         if ax is None:
@@ -181,4 +181,3 @@ class PointPattern:
         ax.set_aspect(aspect)
         return ax
     '''
-
