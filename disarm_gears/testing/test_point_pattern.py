@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 import pandas as pd
-import geopandas as geop
+import geopandas
 from shapely import geometry
 from disarm_gears.frames import PointPattern
 
@@ -16,12 +16,12 @@ g_attrib_2 = np.random.random(40).reshape(10, -1)
 g_attrib_3 = pd.DataFrame({li: ci for li,ci in zip(['a', 'b', 'c', 'd'], g_attrib_2.T)})
 n_points = g_points.shape[0]
 X = np.vstack([g_points.copy()[5:], np.array([10, 10])])
-B = geop.GeoDataFrame({'id': [0], 'geometry': [geometry.Polygon(((0.2, 0.3), (0.2, 0.8),
+B = geopandas.GeoDataFrame({'id': [0], 'geometry': [geometry.Polygon(((0.2, 0.3), (0.2, 0.8),
                                                                  (0.7, 0.8), (0.2, 0.3)))]})
-B2 = geop.GeoDataFrame({'id': [0, 1], 'geometry': [geometry.Polygon(((0.2, 0.3), (0.2, 0.8),
+B2 = geopandas.GeoDataFrame({'id': [0, 1], 'geometry': [geometry.Polygon(((0.2, 0.3), (0.2, 0.8),
                                                                      (0.7, 0.8), (0.2, 0.3))),
-                                                   geometry.Polygon(((0.2, 0.3), (0.2, 0.8),
-                                                                     (0.7, 0.3), (0.2, 0.3)))]})
+                                                        geometry.Polygon(((0.2, 0.3), (0.7, 0.3),
+                                                                     (0.7, 0.8), (0.2, 0.3)))]})
 
 def test_inputs():
     # Check bad inputs
@@ -49,13 +49,13 @@ def test_outputs():
     sf_3 = PointPattern(points=g_points, attributes=g_attrib_2, crs=None)
     sf_4 = PointPattern(points=g_points, attributes=g_attrib_3, crs=None)
 
-    # Check sf.region is geop.GeoDataFrame
+    # Check sf.region is geopandas.GeoDataFrame
     isinstance(sf_2.centroids, np.ndarray)
     isinstance(sf_2.centroids, np.ndarray)
     sf_4.centroids.shape[0] == n_points
-    isinstance(sf_1.region, geop.GeoDataFrame)
-    isinstance(sf_0.region, geop.GeoDataFrame)
-    isinstance(sf_3.region, geop.GeoDataFrame)
+    isinstance(sf_1.region, geopandas.GeoDataFrame)
+    isinstance(sf_0.region, geopandas.GeoDataFrame)
+    isinstance(sf_3.region, geopandas.GeoDataFrame)
 
     # Check sf.region shape
     sf_1.region.ndim == 2
@@ -95,19 +95,20 @@ def test_attributes_array():
 
 def test_set_boundary():
 
-    sf_1 = PointPattern(points=g_points, attributes=g_attrib_1, crs=None)
+    new_points = np.array([[.22, .68, .68, .22], [.32, .32, .78, .78]]).T
+    sf_1 = PointPattern(points=new_points, attributes=None, crs=None)
     with pytest.raises(AssertionError):
         sf_1.set_boundary(B=B.geometry[0])
     sf_1.set_boundary(B=B)
-    assert isinstance(sf_1.boundary, geop.GeoDataFrame)
+    assert isinstance(sf_1.boundary, geopandas.GeoDataFrame)
     assert sf_1.box.loc[0, 'x'] == 0.2
     assert sf_1.box.loc[1, 'x'] == 0.7
     assert sf_1.box.loc[0, 'y'] == 0.3
     assert sf_1.box.loc[1, 'y'] == 0.8
 
-    sf_2 = PointPattern(points=g_points, attributes=g_attrib_1, crs=None)
+    sf_2 = PointPattern(points=new_points, attributes=None, crs=None)
     sf_2.set_boundary(B2)
-    assert isinstance(sf_2.boundary, geop.GeoDataFrame)
+    assert isinstance(sf_2.boundary, geopandas.GeoDataFrame)
 
     assert sf_1.region.shape[0] < sf_2.region.shape[0]
 
@@ -133,7 +134,7 @@ def test_make_attribute_series():
     with pytest.raises(AssertionError):
         sf_3.make_attributes_series(knots=np.array([0, 1]), var_name=0)
     new_geop = sf_3.make_attributes_series(knots=np.arange(2), var_name='new_var')
-    assert isinstance(new_geop, geop.GeoDataFrame)
+    assert isinstance(new_geop, geopandas.GeoDataFrame)
     assert new_geop.shape[0] == sf_3.region.shape[0] * 2
     assert np.all([ni in new_geop.columns for ni in sf_3.attributes_names])
     assert 'new_var' in new_geop.columns
