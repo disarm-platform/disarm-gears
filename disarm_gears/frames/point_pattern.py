@@ -147,37 +147,3 @@ class PointPattern:
 
 
     #TODO def raster_to_frame(self, raster, buffer, fun='mean', fill_method=None):
-    '''
-    from descartes import PolygonPatch
-    import matplotlib.pyplot as plt
-    
-    def plot_boundary(self, ax=None, color='gray', aspect='equal'):
-
-        if ax is None:
-            ax = self._get_canvas(aspect=aspect)
-
-        for gi in self.boundary.geometry:
-            ax.add_patch(PolygonPatch(gi, color=color, alpha=.5))
-
-        return ax
-
-
-    def plot(self, ax=None, color='black', aspect='equal'):
-
-        if ax is None:
-            ax = self._get_canvas(aspect=aspect)
-
-        if hasattr(self, 'boundary'):
-            self.plot_boundary(ax=ax)
-
-        ax.plot(*self.centroids.T, 'o', color=color)
-
-        return ax
-
-    def _get_canvas(self, aspect='equal'):
-        ax = plt.subplot()
-        ax.set_xlim(self.box['x'])
-        ax.set_ylim(self.box['y'])
-        ax.set_aspect(aspect)
-        return ax
-    '''

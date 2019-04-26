@@ -6,9 +6,9 @@ from disarm_gears.validators import validate_2d_array, validate_1d_array
 from disarm_gears.frames.point_pattern import PointPattern
 #from disarm_gears.frames.raster_image import RasterImage TODO
 from sklearn.tree import DecisionTreeRegressor
+from descartes import PolygonPatch
 
 
-#TODO add tests
 #NOTE this class is similar to Tesellation, but uses pre-defined polygons as opposed to points
 class TilePattern(PointPattern):
 
@@ -166,60 +166,48 @@ class TilePattern(PointPattern):
         return z
 
 
-    def raster_to_frame(self, raster, fun='mean', fill_method=None):
-        '''
-        From the values in a raster layer, compute the statistic fun per geometry in the region.
+    #def raster_to_frame(self, raster, fun='mean', fill_method=None):
+    #    '''
+    #    From the values in a raster layer, compute the statistic fun per geometry in the region.
 
-        :param raster: Raster object.
+    #    :param raster: Raster object.
 
-        :param fun: Statistic function to compute per region.
-                    String.
-        :param fill_method: Method to fill not available values (optional).
-                            String or None (defaults to None).
-        :return: Dataframe with statistics per geometry.
-                 pandas DataFrame.
-        '''
-        rr = RasterImage(image=raster, thresholds=thresholds) #TODO add object type in docstrings
-        X = rr.get_coordinates(filter=True)
-        y = rr.region.ReadAsArray().flatten()
-        z = self.marked_points_to_frame(X, y, fun=fun)
+    #    :param fun: Statistic function to compute per region.
+    #                String.
+    #    :param fill_method: Method to fill not available values (optional).
+    #                        String or None (defaults to None).
+    #    :return: Dataframe with statistics per geometry.
+    #             pandas DataFrame.
+    #    '''
+    #    rr = RasterImage(image=raster, thresholds=thresholds) #TODO add object type in docstrings
+    #    X = rr.get_coordinates(filter=True)
+    #    y = rr.region.ReadAsArray().flatten()
+    #    z = self.marked_points_to_frame(X, y, fun=fun)
 
-        if fill_method is None:
-            pass
-        elif fill_method == 'DecisionTree':
-            a = np.array(z.index)
-            b = np.delete(np.array(self.region.index), a)
-            if b.size > 0:
-                Xa = X[a]
-                Xb = X[b]
-                Xa = np.hstack([Xa, (Xa[:, 0] * Xa[:, 1])[:, None]])
-                Xb = np.hstack([Xb, (Xb[:, 0] * Xb[:, 1])[:, None]])
-                ya = z['var_0']
-                m = DecisionTreeRegressor()
-                m.fit(Xa, ya)
-                yb = m.predict(Xb)
-                z = pd.DataFrame(data={'var_0': np.hstack([ya, yb])}, index=np.hstack([a, b]))
-                z.sort_index(inplace=True)
-        else:
-            #TODO: Add other methods to fill missing values
-            raise NotImplementedError
+    #    if fill_method is None:
+    #        pass
+    #    elif fill_method == 'DecisionTree':
+    #        a = np.array(z.index)
+    #        b = np.delete(np.array(self.region.index), a)
+    #        if b.size > 0:
+    #            Xa = X[a]
+    #            Xb = X[b]
+    #            Xa = np.hstack([Xa, (Xa[:, 0] * Xa[:, 1])[:, None]])
+    #            Xb = np.hstack([Xb, (Xb[:, 0] * Xb[:, 1])[:, None]])
+    #            ya = z['var_0']
+    #            m = DecisionTreeRegressor()
+    #            m.fit(Xa, ya)
+    #            yb = m.predict(Xb)
+    #            z = pd.DataFrame(data={'var_0': np.hstack([ya, yb])}, index=np.hstack([a, b]))
+    #            z.sort_index(inplace=True)
+    #    else:
+    #        #TODO: Add other methods to fill missing values
+    #        raise NotImplementedError
 
-        return z
+    #    return z
 
 
-'''
-    from descartes import PolygonPatch
-    def plot(self, ax=None, color='gray', aspect='equal'):
 
-        if ax is None:
-            ax = self._get_canvas(aspect=aspect)
-
-        for gi in self.region.geometry:
-            ax.add_patch(PolygonPatch(gi, color=color, alpha=.5))
-
-        return ax
-
-'''
 #def _get_geometry_grid(self, size=40):
 #    return np.meshgrid(np.linspace(*self.box['x'], size), np.linspace(*self.box['y'], size))
 
