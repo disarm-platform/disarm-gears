@@ -51,8 +51,7 @@ def mgcv_fit(formula, data, family='gaussian', weights=None, method="REML"):
     if weights is None:
         gam = rmgcv.gam(formula=rformula, data=rdata, family=rfamily, method=method)
     else:
-        raise NotImplementedError
-        #gam = rmgcv.gam(formula=rformula, data=rdata, weights=weighs, family=family, method=method)
+        gam = rmgcv.gam(formula=rformula, data=rdata, family=family, weights=weights, method=method)
     return gam
 
 
@@ -62,7 +61,8 @@ def mgcv_predict(gam, data, response_type='response'):
     assert isinstance(data, pd.DataFrame)
     if response_type not in ['link', 'response', 'lpmatrix']:
         raise NotImplementedError
-    return np.array(rmgcv.predict_gam(gam, newdata=data, type=response_type))
+    rdata = pdframe2rdframe(data)
+    return np.array(rmgcv.predict_gam(gam, newdata=rdata, type=response_type))
 
 
 def mgcv_posterior_samples(gam, data, n_samples=100, response_type='inverse_link'):
