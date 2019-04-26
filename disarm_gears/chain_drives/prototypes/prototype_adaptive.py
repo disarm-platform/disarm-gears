@@ -72,6 +72,17 @@ def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials,
         layer_names += ['elev_m', 'dist_to_water_m']
         x_frame_js = df_to_geojson(pd.DataFrame(x_frame, columns=['lng', 'lat']), layer_names=layer_names)
         x_train_js = df_to_geojson(pd.DataFrame(x_coords, columns=['lng', 'lat']), layer_names=layer_names)
+
+
+        ###DELETE
+        #with open('x_frame_js.json', 'w') as f:
+        #    json.dump(x_frame_js, f)
+
+        #with open('x_train_js.json', 'w') as f:
+        #    json.dump(x_train_js, f)
+        ###DELETE
+
+
         algo_link = 'http://faas.srv.disarm.io/function/fn-covariate-extractor'
         algo_frame = requests.post(algo_link, data=json.dumps(x_frame_js))
         algo_train = requests.post(algo_link, data=json.dumps(x_train_js))
@@ -91,15 +102,19 @@ def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials,
 
         new_X = np.hstack([trend_2nd_order(X), ml_train])
         new_x_coords = np.hstack([trend_2nd_order(x_frame), ml_frame])
+        #new_X = np.hstack([X, ml_train])
+        #new_x_coords = np.hstack([x_frame, ml_frame])
 
 
     # Train model
+    #base_model = pygam.LogisticGAM(pygam.te(0,1, n_splines=10) + pygam.s(2, n_splines=10), lam=10)
     base_model = pygam.LogisticGAM()
     base_model.gridsearch(y=target, X=new_X, weights=weights)
 
     n_samples = 200
     m_simulations = base_model.sample(X=new_X, y=target, weights=weights, sample_at_X=new_x_coords,
-                                      quantity='mu', n_draws=n_samples)
+                                      quantity='mu', n_draws=n_samples)#, n_bootstraps=1)
+    print(m_simulations.shape)
 
     #m_prev = m_simulations.mean(0)
     m_prev = base_model.predict_mu(new_x_coords)
@@ -108,13 +123,17 @@ def adaptive_prototype_0(x_frame, x_id, x_coords, n_positive, n_trials,
     m_category = np.zeros_like(m_prob)
     m_category[m_prev > threshold] = 1
 
+    mask_prob = np.logical_and(m_prob != 1, m_prob != 0)
+    #entropy = np.zeros_like(mask_prob)
+    #entropy[mask_prob] = (- m_prob[mask_prob] * np.log2(m_prob[mask_prob]) - (1-m_prob[mask_prob]) * np.log2(1 - m_prob[mask_prob]))
     entropy = (- m_prob * np.log2(m_prob) - (1-m_prob) * np.log2(1 - m_prob))
     entropy[np.isnan(entropy)] = 0
+    print(entropy)
 
     #m_export = {'id': x_id.tolist(), 'prevalence': m_prev.tolist(), 'category': m_category.tolist(),
     #            'entropy': entropy.tolist()}
     m_export = {'id': x_id.tolist(), 'exceedance_prob': m_prob.tolist(), 'category': m_category.tolist(),
-                'entropy': entropy.tolist()}
+                'entropy': entropy.tolist()}#, 'prevalence': m_prev.tolist()}
 
     joint_output = {'polygons': ts_export, 'estimates': m_export}
 
