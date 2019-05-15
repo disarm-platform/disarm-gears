@@ -15,9 +15,9 @@ def pdframe2rdframe(data):
     '''
     Converts a pandas DataFrame into an R dataframe
 
-    :param data:
+    :param data: Data to convert into an R dataframe
                  pandas DataFrame
-    :return:
+    :return: R object
     '''
     # This step is just to make sure pandas2ri.DataFrame works as expected
     data2 = pd.DataFrame({ci: [vi for vi in data[ci]] for ci in data.columns})
