@@ -9,6 +9,7 @@ matplotlib
 rtree
 pygam
 requests
+rpy2
 
 # For tests
 nose
