@@ -15,9 +15,8 @@ setup(name = "DisarmGears",
                   "disarm_gears.util",
                   "disarm_gears.testing",
                   "disarm_gears.r_plugins",
-                  "disarm_gears.validators"
-      ],
+                  "disarm_gears.validators"],
       install_requires = ["rpy2"],
       license = open("LICENSE").read(),
       long_description = open("README.md").read(),
-      )
+)
