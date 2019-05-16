@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-__version__ = "0.1.6"
+__version__ = "0.1.7"
 
 setup(name = "DisarmGears",
       version = __version__,
@@ -15,7 +15,8 @@ setup(name = "DisarmGears",
                   "disarm_gears.util",
                   "disarm_gears.testing",
                   "disarm_gears.r_plugins",
-                  "disarm_gears.validators"],
+                  "disarm_gears.validators",
+                  "rpy2"],
       license = open("LICENSE").read(),
       long_description = open("README.md").read(),
       )
