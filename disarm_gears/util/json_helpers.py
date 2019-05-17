@@ -1,4 +1,5 @@
 import json
+import pandas as pd
 
 
 def geojson_encoder_1(dataframe, layer_names=[], lng='lng', lat='lat'):
