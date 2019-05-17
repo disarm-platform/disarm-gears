@@ -65,7 +65,7 @@ def mgcv_predict(gam, data, response_type='response'):
     return np.array(rmgcv.predict_gam(gam, newdata=rdata, type=response_type))
 
 
-def mgcv_posterior_samples(gam, data, n_samples=100, response_type='inverse_link'):
+def mgcv_posterior_samples(gam, data, n_samples=100, response_type='inverse_link') -> np.ndarray:
 
     assert isinstance(gam, robjects.vectors.ListVector)
     assert isinstance(data, pd.DataFrame)

@@ -1,6 +1,6 @@
 from distutils.core import setup
 
-__version__ = "0.2.0"
+__version__ = "0.2.2"
 
 setup(name="DisarmGears",
       version=__version__,
@@ -17,7 +17,7 @@ setup(name="DisarmGears",
                   "disarm_gears.r_plugins",
                   "disarm_gears.validators"],
       install_requires=["numpy", "scipy", "scikit-learn", "pandas >= 0.22.0", "geopandas",
-                        "shapely", "descartes", "matplotlib", "rtree", "pygam", "requests", "rpy2"],
+                        "shapely", "descartes", "matplotlib", "rtree", "pygam", "requests", "rpy2", "tzlocal"],
       license=open("LICENSE").read(),
       long_description=open("README.md").read(),
       )
