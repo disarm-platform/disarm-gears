@@ -11,6 +11,7 @@ pandas2ri.activate()
 rbase = importr('base')
 #rutils = importr('utils')
 
+
 def pdframe2rdframe(data):
     '''
     Converts a pandas DataFrame into an R dataframe
@@ -23,7 +24,34 @@ def pdframe2rdframe(data):
     data2 = pd.DataFrame({ci: [vi for vi in data[ci]] for ci in data.columns})
     return pandas2ri.DataFrame(data2)
 
-def mgcv_fit(formula, data, family='gaussian', weights=None, method="REML"):
+
+def mgcv_get_rho_power_exp2(iter_formula, data, smooth_dim, family='gaussian', weights=None, method='REML'):
+
+    # Fit initial model and check model components are in place
+    m0 = mgcv_fit(iter_formula %'', data=data, family=family, weights=weights, method=method)
+    ix_gcv = get_names(m0).index('gcv.ubre')
+    ix_smooth = get_names(m0).index('smooth')
+    if smooth_dim == 1:
+        ix_gpdefn = get_names(m0[ix_smooth][0]).index('gp.defn')
+        rho0 = m0[ix_smooth][0][ix_gpdefn][1]
+    elif smooth_dim == 2:
+        ix_gpdefn = get_names(m0[ix_smooth][0][0][0]).index('gp.defn')
+        rho0 = m0[ix_smooth][0][0][0][ix_gpdefn][1]
+    else:
+        raise NotImplementedError
+
+    # Grid of values to try
+    rho_grid = [rho0/(2 ** i) for i in range(int(np.log2(rho0)))[::-1]]
+
+    # Lambda function to fit all models
+    iter_fit = lambda rho_i:  mgcv_fit(iter_formula %', %s, 2' %rho_i,
+                                       data=data, family=family, weights=weights, method=method)
+    gcv_vals = np.hstack([iter_fit(rho_i)[ix_gcv] for rho_i in rho_grid])
+
+    return rho_grid[np.argmin(gcv_vals)]
+
+
+def mgcv_fit(formula, data, family='gaussian', weights=None, method='REML'):
     '''
     :param formula:
                     String.
@@ -96,7 +124,8 @@ def mgcv_posterior_samples(gam, data, n_samples=100, response_type='inverse_link
     elif response_type == 'response':
         family, link = get_family(gam), get_link(gam)
         if family == 'gaussian' and link == 'identity':
-            sigma_noise = np.sqrt(gam[19]) #TODO check
+            ix_scale = get_names(gam).index('scale') #TODO check
+            sigma_noise = np.sqrt(gam[ix_scale])
             samples = _post + np.random.normal(0, sigma_noise, _post.size).reshape(_post.shape)
         else:
             raise NotImplementedError
