@@ -41,7 +41,10 @@ def mgcv_get_rho_power_exp2(iter_formula, data, smooth_dim, family='gaussian', w
         raise NotImplementedError
 
     # Grid of values to try
-    rho_grid = [rho0/(2 ** i) for i in range(int(np.log2(rho0)))[::-1]]
+    if rho0 >= 8:
+        rho_grid = [rho0/(2 ** i) for i in range(int(np.log2(rho0)))[::-1]]
+    else:
+        rho_grid = [i * rho0 / 10. for i in range(1, 11)]
 
     # Lambda function to fit all models
     iter_fit = lambda rho_i:  mgcv_fit(iter_formula %', %s, 2' %rho_i,
