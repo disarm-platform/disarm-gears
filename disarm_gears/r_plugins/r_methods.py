@@ -44,7 +44,7 @@ def mgcv_get_rho_power_exp2(iter_formula, data, smooth_dim, family='gaussian', w
     if rho0 >= 8:
         rho_grid = [rho0/(2 ** i) for i in range(int(np.log2(rho0)))[::-1]]
     else:
-        rho_grid = [i * rho0 / 10. for i in range(1, 11)]
+        rho_grid = [i * rho0 / 10. for i in range(1, 11, 2)]
 
     # Lambda function to fit all models
     iter_fit = lambda rho_i:  mgcv_fit(iter_formula %', %s, 2' %rho_i,
@@ -146,7 +146,15 @@ def get_link(gam):
     return gam[3][1][0]
 
 def get_names(obj):
-    return rbase.names(obj)
+    #return rbase.names(obj)
+    obj_names = rbase.names(obj)
+    if isinstance(obj_names, np.ndarray):
+        obj_names = obj_names.tolist()
+    return obj_names
+
+
+
+
 
 def summary(model):
     print(rbase.summary(model))
