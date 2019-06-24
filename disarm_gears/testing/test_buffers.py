@@ -1,6 +1,6 @@
 import unittest
+import geopandas
 import numpy as np
-import geopandas as geop
 from disarm_gears.util import voronoi_polygons, regular_polygons, disjoint_polygons
 
 
@@ -16,7 +16,7 @@ class BuffersTests(unittest.TestCase):
         self.assertRaises(AssertionError, voronoi_polygons, X=X.T)
 
         vorpol = voronoi_polygons(X)
-        self.assertIsInstance(vorpol, geop.GeoDataFrame)
+        self.assertIsInstance(vorpol, geopandas.GeoDataFrame)
         self.assertEqual(X.shape[0], vorpol.shape[0])
 
     def test_regular_polygons(self):
@@ -29,16 +29,16 @@ class BuffersTests(unittest.TestCase):
         self.assertRaises(AssertionError, regular_polygons, X=X, radius=vrad[:5], n_angles=2)
 
         regpol = regular_polygons(X, radius=.1, n_angles=6)
-        self.assertIsInstance(regpol, geop.GeoDataFrame)
+        self.assertIsInstance(regpol, geopandas.GeoDataFrame)
         self.assertEqual(X.shape[0], regpol.shape[0])
 
         regpol = regular_polygons(X, radius=vrad, n_angles=6)
-        self.assertIsInstance(regpol, geop.GeoDataFrame)
+        self.assertIsInstance(regpol, geopandas.GeoDataFrame)
         self.assertEqual(X.shape[0], regpol.shape[0])
 
 
     def test_disjoint_polygons(self):
 
         dispol = disjoint_polygons(X, radius=.1, n_angles=6)
-        self.assertIsInstance(dispol, geop.GeoDataFrame)
+        self.assertIsInstance(dispol, geopandas.GeoDataFrame)
         self.assertEqual(X.shape[0], dispol.shape[0])
