@@ -12,3 +12,4 @@ rpy2
 
 # For tests
 pytest
+pytest-cov
