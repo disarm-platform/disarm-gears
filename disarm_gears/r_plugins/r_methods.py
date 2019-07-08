@@ -26,7 +26,7 @@ def pdframe2rdframe(data):
     return pandas2ri.DataFrame(data2)
 
 
-def mgcv_fit(formula, data, family='gaussian', weights=None, method='REML'):
+def mgcv_fit(formula, data, family='gaussian', weights=None, method='REML', bam=False, chunk_size=1000):
     '''
     Fit a Generalized Additive Model
 
@@ -42,7 +42,11 @@ def mgcv_fit(formula, data, family='gaussian', weights=None, method='REML'):
     :param weights: Observation weights
                     numpy ndarray
     :param method: Smoothing parameter estimation method (see R MGCV documentation)
-                   string, one of 'GCV.Cp', 'GACV.Cp', 'REML', 'P-REML', 'ML' (default 'REML').
+                   string, one of 'GCV.Cp', 'GACV.Cp', 'REML', 'P-REML', 'ML', 'fREML' (default 'REML').
+    :param bam: If MGCV implementation for large datasets should be used
+                Boolean
+    :param chunk_size: Size of chunks in which the model matrix is created (Only used when bam=True).
+                       Integer
     :return: robjects.vectors.ListVector
     '''
     assert isinstance(data, pd.DataFrame)
@@ -61,10 +65,17 @@ def mgcv_fit(formula, data, family='gaussian', weights=None, method='REML'):
     rformula = robjects.Formula(formula)
 
     if weights is None:
-        gam = rmgcv.gam(formula=rformula, data=rdata, family=rfamily, method=method)
+        if not bam:
+            gam = rmgcv.gam(formula=rformula, data=rdata, family=rfamily, method=method)
+        else:
+            gam = rmgcv.bam(formula=rformula, data=rdata, family=rfamily, method=method, chunk_size=chunk_size)
     else:
         #TODO assert weights
-        gam = rmgcv.gam(formula=rformula, data=rdata, family=family, weights=weights, method=method)
+        if not bam:
+            gam = rmgcv.gam(formula=rformula, data=rdata, family=family, weights=weights, method=method)
+        else:
+            gam = rmgcv.bam(formula=rformula, data=rdata, family=family, weights=weights, method=method, chunk_size=chunk_size)
+
     return gam
 
 
@@ -104,7 +115,7 @@ def mgcv_posterior_samples(gam, data, n_samples=100, response_type='inverse_link
     :param n_samples: Number of samples to generate
                       Integer (default 100)
     :param response_type: Space or transformation in which the prediction is returned (see R MGCV documentation)
-                          String. One of 'response', 'link', 'lpmatrix'.
+                          String. One of 'response', 'link', 'inverse_link', 'lpmatrix'.
     :return: numpy ndarray of shape (n_samples, n_data)
     '''
 
@@ -133,7 +144,7 @@ def mgcv_posterior_samples(gam, data, n_samples=100, response_type='inverse_link
             samples = 1. / (1. + np.exp(-_post))
         else: #family == 'poisson'
             assert link == 'log'
-            samples = np.exp(-_post)
+            samples = np.exp(_post)
 
     elif response_type == 'response': #TODO the results accuracy of this case have not been tested yet
         family, link = get_family(gam), get_link(gam)
@@ -221,6 +232,11 @@ def mgcv_get_rho_power_exp2(iter_formula, data, smooth_dim, family='gaussian', w
     elif smooth_dim == 2:
         ix_gpdefn = get_names(m0[ix_smooth][0][0][0]).index('gp.defn')
         rho0 = m0[ix_smooth][0][0][0][ix_gpdefn][1]
+    elif smooth_dim == 3:
+        raise NotImplementedError
+        #ix_gpdefn = get_names(m0[ix_smooth][0][0][0]).index('gp.defn')
+        #rho0 = m0[ix_smooth][0][0][0][ix_gpdefn][1]
+        #rho1 = m0[ix_smooth][0][0][1][ix_gpdefn][1]
     else:
         raise NotImplementedError
 
