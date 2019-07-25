@@ -58,7 +58,6 @@ def test_pdframe2rdframe():
 
 def test_mgcv_fit():
 
-
     formula_gauss = "y ~ x1 + x2 + te(lng, lat, bs='gp', m=list(c(2, 4, 2)), d=2, k=-1)"
     formula_binom = "cbind(y, 100 - y) ~ x1 + x2 + te(lng, lat, bs='gp', m=list(c(2, 4, 2)), d=2, k=-1)"
     formula_poiss = "y ~ offset(log(n)) + x1 + x2 + te(lng, lat, bs='gp', m=list(c(2, 4, 2)), d=2, k=-1)"
@@ -68,9 +67,13 @@ def test_mgcv_fit():
     m_poiss = r_methods.mgcv_fit(formula_poiss, f_data2, family='poisson', weights=None, method='REML')
     m_gauss = r_methods.mgcv_fit(formula_gauss, f_data2, family='gaussian', weights=weights, method='REML')
 
+    m_gauss_bam = r_methods.mgcv_fit(formula_gauss, f_data2, family='gaussian', weights=None, method='fREML',
+                                     bam=True)
+
     assert isinstance(m_binom, robjects.vectors.ListVector)
     assert isinstance(m_poiss, robjects.vectors.ListVector)
     assert isinstance(m_gauss, robjects.vectors.ListVector)
+    assert isinstance(m_gauss_bam, robjects.vectors.ListVector)
 
     with pytest.raises(NotImplementedError):
         r_methods.mgcv_fit(formula_binom, f_data2, family='xx', weights=None, method='REML')
@@ -81,6 +84,8 @@ def test_mgcv_fit():
         r_methods.mgcv_fit(formula_binom, f_data2, family='xx', weights=weights[:, None], method='REML')
     with pytest.raises(NotImplementedError):
         r_methods.mgcv_fit(formula_binom, f_data2, family='xx', weights=list(weights), method='REML')
+    with pytest.raises(NotImplementedError):
+        r_methods.mgcv_fit(formula_gauss, f_data2, family='gaussian', weights=weights, method='fREML', bam=True)
 
 
 def test_mgcv_predict():
@@ -151,6 +156,7 @@ def test_mgcv_get_rho_power_exp2():
                                                   weights=None, method="REML")
 
     assert isinstance(rho_gauss, float)
+    assert isinstance(rho_gauss3, float)
 
 
 def test_get_family():
@@ -159,6 +165,7 @@ def test_get_family():
     m_binom = r_methods.mgcv_fit(formula_binom, f_data2, family='binomial', weights=None, method='REML')
     family = r_methods.get_family(m_binom)
     assert family == 'binomial'
+
 
 def test_get_link():
 
@@ -178,6 +185,7 @@ def test_get_names():
     m_binom = r_methods.mgcv_fit(formula_binom, f_data2, family='binomial', weights=None, method='REML')
     obj_names2 = r_methods.get_names(m_binom)
     assert isinstance(obj_names2, list)
+
 
 def test_summary(capfd):
 

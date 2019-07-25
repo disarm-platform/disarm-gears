@@ -74,7 +74,7 @@ def mgcv_fit(formula, data, family='gaussian', weights=None, method='REML', bam=
         if not bam:
             gam = rmgcv.gam(formula=rformula, data=rdata, family=family, weights=weights, method=method)
         else:
-            gam = rmgcv.bam(formula=rformula, data=rdata, family=family, weights=weights, method=method, chunk_size=chunk_size)
+            raise NotImplementedError
 
     return gam
 
@@ -232,13 +232,11 @@ def mgcv_get_rho_power_exp2(iter_formula, data, smooth_dim, family='gaussian', w
     elif smooth_dim == 2:
         ix_gpdefn = get_names(m0[ix_smooth][0][0][0]).index('gp.defn')
         rho0 = m0[ix_smooth][0][0][0][ix_gpdefn][1]
-    elif smooth_dim == 3:
+    else: #elif smooth_dim == 3:
         raise NotImplementedError
         #ix_gpdefn = get_names(m0[ix_smooth][0][0][0]).index('gp.defn')
         #rho0 = m0[ix_smooth][0][0][0][ix_gpdefn][1]
         #rho1 = m0[ix_smooth][0][0][1][ix_gpdefn][1]
-    else:
-        raise NotImplementedError
 
     # Grid of values to try
     if rho0 >= 8:
