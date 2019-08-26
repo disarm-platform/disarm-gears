@@ -70,10 +70,14 @@ def test_mgcv_fit():
     m_gauss_bam = r_methods.mgcv_fit(formula_gauss, f_data2, family='gaussian', weights=None, method='fREML',
                                      bam=True)
 
+    #m_gaus_wam = r_methods.mgcv_fit(formula_gauss, f_data2, family='gaussian', weights=weights.tolist(), method='fREML',
+    #                                bam=True)
+
     assert isinstance(m_binom, robjects.vectors.ListVector)
     assert isinstance(m_poiss, robjects.vectors.ListVector)
     assert isinstance(m_gauss, robjects.vectors.ListVector)
     assert isinstance(m_gauss_bam, robjects.vectors.ListVector)
+    #assert isinstance(m_gauss_wam, robjects.vectors.ListVector)
 
     with pytest.raises(NotImplementedError):
         r_methods.mgcv_fit(formula_binom, f_data2, family='xx', weights=None, method='REML')
@@ -84,8 +88,8 @@ def test_mgcv_fit():
         r_methods.mgcv_fit(formula_binom, f_data2, family='xx', weights=weights[:, None], method='REML')
     with pytest.raises(NotImplementedError):
         r_methods.mgcv_fit(formula_binom, f_data2, family='xx', weights=list(weights), method='REML')
-    with pytest.raises(NotImplementedError):
-        r_methods.mgcv_fit(formula_gauss, f_data2, family='gaussian', weights=weights, method='fREML', bam=True)
+    #with pytest.raises(NotImplementedError):
+    #    r_methods.mgcv_fit(formula_gauss, f_data2, family='gaussian', weights=weights, method='fREML', bam=True)
 
 
 def test_mgcv_predict():

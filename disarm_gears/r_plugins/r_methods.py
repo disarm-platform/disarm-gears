@@ -74,7 +74,8 @@ def mgcv_fit(formula, data, family='gaussian', weights=None, method='REML', bam=
         if not bam:
             gam = rmgcv.gam(formula=rformula, data=rdata, family=family, weights=weights, method=method)
         else:
-            raise NotImplementedError
+            gam = rmgcv.bam(formula=rformula, data=rdata, family=family, weights=weights, method=method,
+                            chunk_size=chunk_size)
 
     return gam
 
