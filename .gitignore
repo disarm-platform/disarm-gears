@@ -3,3 +3,6 @@
 *.ipynb
 *.png
 .coverage*
+expendables/*
+dist/*
+data/*
