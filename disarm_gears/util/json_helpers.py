@@ -64,10 +64,10 @@
 #
 #    result = {'layer_names': layer_names, 'points': geojson_dict}
 #
-    if dumps:
-        result = json.dumps(result)
-
-    return result
+#    if dumps:
+#        result = json.dumps(result)
+#
+#    return result
 
 
 def geojson_decoder_1(json_dict):
