@@ -1,0 +1,477 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>disarm_gears.testing package &mdash; DiSARM Gears  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> DiSARM Gears
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">disarm_gears.testing package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-disarm_gears.testing.test_array_validators">disarm_gears.testing.test_array_validators module</a></li>
+<li><a class="reference internal" href="#module-disarm_gears.testing.test_binomial_to_bernoulli">disarm_gears.testing.test_binomial_to_bernoulli module</a></li>
+<li><a class="reference internal" href="#module-disarm_gears.testing.test_buffers">disarm_gears.testing.test_buffers module</a></li>
+<li><a class="reference internal" href="#module-disarm_gears.testing.test_json_helpers">disarm_gears.testing.test_json_helpers module</a></li>
+<li><a class="reference internal" href="#module-disarm_gears.testing.test_point_pattern">disarm_gears.testing.test_point_pattern module</a></li>
+<li><a class="reference internal" href="#module-disarm_gears.testing.test_r_methods">disarm_gears.testing.test_r_methods module</a></li>
+<li><a class="reference internal" href="#module-disarm_gears.testing.test_sparse_grid">disarm_gears.testing.test_sparse_grid module</a></li>
+<li><a class="reference internal" href="#module-disarm_gears.testing.test_surface_trends">disarm_gears.testing.test_surface_trends module</a></li>
+<li><a class="reference internal" href="#module-disarm_gears.testing.test_tile_pattern">disarm_gears.testing.test_tile_pattern module</a></li>
+<li><a class="reference internal" href="#module-disarm_gears.testing.test_timeframe">disarm_gears.testing.test_timeframe module</a></li>
+<li><a class="reference internal" href="#module-disarm_gears.testing">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DiSARM Gears</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>disarm_gears.testing package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/disarm_gears.testing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="disarm-gears-testing-package">
+<h1>disarm_gears.testing package<a class="headerlink" href="#disarm-gears-testing-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-disarm_gears.testing.test_array_validators">
+<span id="disarm-gears-testing-test-array-validators-module"></span><h2>disarm_gears.testing.test_array_validators module<a class="headerlink" href="#module-disarm_gears.testing.test_array_validators" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disarm_gears.testing.test_array_validators.ArrayValidatorsTests">
+<em class="property">class </em><code class="sig-prename descclassname">disarm_gears.testing.test_array_validators.</code><code class="sig-name descname">ArrayValidatorsTests</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_array_validators.ArrayValidatorsTests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="disarm_gears.testing.test_array_validators.ArrayValidatorsTests.test_validate_1d_array">
+<code class="sig-name descname">test_validate_1d_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_array_validators.ArrayValidatorsTests.test_validate_1d_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="disarm_gears.testing.test_array_validators.ArrayValidatorsTests.test_validate_2d_array">
+<code class="sig-name descname">test_validate_2d_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_array_validators.ArrayValidatorsTests.test_validate_2d_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="disarm_gears.testing.test_array_validators.ArrayValidatorsTests.test_validate_integer_array">
+<code class="sig-name descname">test_validate_integer_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_array_validators.ArrayValidatorsTests.test_validate_integer_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="disarm_gears.testing.test_array_validators.ArrayValidatorsTests.test_validate_non_negative_array">
+<code class="sig-name descname">test_validate_non_negative_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_array_validators.ArrayValidatorsTests.test_validate_non_negative_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="disarm_gears.testing.test_array_validators.ArrayValidatorsTests.test_validate_positive_array">
+<code class="sig-name descname">test_validate_positive_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_array_validators.ArrayValidatorsTests.test_validate_positive_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-disarm_gears.testing.test_binomial_to_bernoulli">
+<span id="disarm-gears-testing-test-binomial-to-bernoulli-module"></span><h2>disarm_gears.testing.test_binomial_to_bernoulli module<a class="headerlink" href="#module-disarm_gears.testing.test_binomial_to_bernoulli" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disarm_gears.testing.test_binomial_to_bernoulli.BinomialToBernoulliTests">
+<em class="property">class </em><code class="sig-prename descclassname">disarm_gears.testing.test_binomial_to_bernoulli.</code><code class="sig-name descname">BinomialToBernoulliTests</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_binomial_to_bernoulli.BinomialToBernoulliTests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="disarm_gears.testing.test_binomial_to_bernoulli.BinomialToBernoulliTests.test_inputs">
+<code class="sig-name descname">test_inputs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_binomial_to_bernoulli.BinomialToBernoulliTests.test_inputs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="disarm_gears.testing.test_binomial_to_bernoulli.BinomialToBernoulliTests.test_outputs">
+<code class="sig-name descname">test_outputs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_binomial_to_bernoulli.BinomialToBernoulliTests.test_outputs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-disarm_gears.testing.test_buffers">
+<span id="disarm-gears-testing-test-buffers-module"></span><h2>disarm_gears.testing.test_buffers module<a class="headerlink" href="#module-disarm_gears.testing.test_buffers" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disarm_gears.testing.test_buffers.BuffersTests">
+<em class="property">class </em><code class="sig-prename descclassname">disarm_gears.testing.test_buffers.</code><code class="sig-name descname">BuffersTests</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_buffers.BuffersTests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="disarm_gears.testing.test_buffers.BuffersTests.test_disjoint_polygons">
+<code class="sig-name descname">test_disjoint_polygons</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_buffers.BuffersTests.test_disjoint_polygons" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="disarm_gears.testing.test_buffers.BuffersTests.test_regular_polygons">
+<code class="sig-name descname">test_regular_polygons</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_buffers.BuffersTests.test_regular_polygons" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="disarm_gears.testing.test_buffers.BuffersTests.test_vornoi_polygons">
+<code class="sig-name descname">test_vornoi_polygons</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_buffers.BuffersTests.test_vornoi_polygons" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-disarm_gears.testing.test_json_helpers">
+<span id="disarm-gears-testing-test-json-helpers-module"></span><h2>disarm_gears.testing.test_json_helpers module<a class="headerlink" href="#module-disarm_gears.testing.test_json_helpers" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-disarm_gears.testing.test_point_pattern">
+<span id="disarm-gears-testing-test-point-pattern-module"></span><h2>disarm_gears.testing.test_point_pattern module<a class="headerlink" href="#module-disarm_gears.testing.test_point_pattern" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="disarm_gears.testing.test_point_pattern.test_attributes_array">
+<code class="sig-prename descclassname">disarm_gears.testing.test_point_pattern.</code><code class="sig-name descname">test_attributes_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_point_pattern.test_attributes_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_point_pattern.test_inputs">
+<code class="sig-prename descclassname">disarm_gears.testing.test_point_pattern.</code><code class="sig-name descname">test_inputs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_point_pattern.test_inputs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_point_pattern.test_make_attribute_series">
+<code class="sig-prename descclassname">disarm_gears.testing.test_point_pattern.</code><code class="sig-name descname">test_make_attribute_series</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_point_pattern.test_make_attribute_series" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_point_pattern.test_make_grid">
+<code class="sig-prename descclassname">disarm_gears.testing.test_point_pattern.</code><code class="sig-name descname">test_make_grid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_point_pattern.test_make_grid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_point_pattern.test_outputs">
+<code class="sig-prename descclassname">disarm_gears.testing.test_point_pattern.</code><code class="sig-name descname">test_outputs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_point_pattern.test_outputs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_point_pattern.test_set_boundary">
+<code class="sig-prename descclassname">disarm_gears.testing.test_point_pattern.</code><code class="sig-name descname">test_set_boundary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_point_pattern.test_set_boundary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-disarm_gears.testing.test_r_methods">
+<span id="disarm-gears-testing-test-r-methods-module"></span><h2>disarm_gears.testing.test_r_methods module<a class="headerlink" href="#module-disarm_gears.testing.test_r_methods" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="disarm_gears.testing.test_r_methods.test_get_family">
+<code class="sig-prename descclassname">disarm_gears.testing.test_r_methods.</code><code class="sig-name descname">test_get_family</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_r_methods.test_get_family" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_r_methods.test_get_link">
+<code class="sig-prename descclassname">disarm_gears.testing.test_r_methods.</code><code class="sig-name descname">test_get_link</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_r_methods.test_get_link" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_r_methods.test_get_names">
+<code class="sig-prename descclassname">disarm_gears.testing.test_r_methods.</code><code class="sig-name descname">test_get_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_r_methods.test_get_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_r_methods.test_mgcv_fit">
+<code class="sig-prename descclassname">disarm_gears.testing.test_r_methods.</code><code class="sig-name descname">test_mgcv_fit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_r_methods.test_mgcv_fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_r_methods.test_mgcv_get_rho_power_exp2">
+<code class="sig-prename descclassname">disarm_gears.testing.test_r_methods.</code><code class="sig-name descname">test_mgcv_get_rho_power_exp2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_r_methods.test_mgcv_get_rho_power_exp2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_r_methods.test_mgcv_posterior_samples">
+<code class="sig-prename descclassname">disarm_gears.testing.test_r_methods.</code><code class="sig-name descname">test_mgcv_posterior_samples</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_r_methods.test_mgcv_posterior_samples" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_r_methods.test_mgcv_predict">
+<code class="sig-prename descclassname">disarm_gears.testing.test_r_methods.</code><code class="sig-name descname">test_mgcv_predict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_r_methods.test_mgcv_predict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_r_methods.test_pdframe2rdframe">
+<code class="sig-prename descclassname">disarm_gears.testing.test_r_methods.</code><code class="sig-name descname">test_pdframe2rdframe</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_r_methods.test_pdframe2rdframe" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_r_methods.test_summary">
+<code class="sig-prename descclassname">disarm_gears.testing.test_r_methods.</code><code class="sig-name descname">test_summary</code><span class="sig-paren">(</span><em class="sig-param">capfd</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_r_methods.test_summary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-disarm_gears.testing.test_sparse_grid">
+<span id="disarm-gears-testing-test-sparse-grid-module"></span><h2>disarm_gears.testing.test_sparse_grid module<a class="headerlink" href="#module-disarm_gears.testing.test_sparse_grid" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="disarm_gears.testing.test_sparse_grid.test_add_polygon_from_xy">
+<code class="sig-prename descclassname">disarm_gears.testing.test_sparse_grid.</code><code class="sig-name descname">test_add_polygon_from_xy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_sparse_grid.test_add_polygon_from_xy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_sparse_grid.test_get_simplified">
+<code class="sig-prename descclassname">disarm_gears.testing.test_sparse_grid.</code><code class="sig-name descname">test_get_simplified</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_sparse_grid.test_get_simplified" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_sparse_grid.test_outputs">
+<code class="sig-prename descclassname">disarm_gears.testing.test_sparse_grid.</code><code class="sig-name descname">test_outputs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_sparse_grid.test_outputs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-disarm_gears.testing.test_surface_trends">
+<span id="disarm-gears-testing-test-surface-trends-module"></span><h2>disarm_gears.testing.test_surface_trends module<a class="headerlink" href="#module-disarm_gears.testing.test_surface_trends" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disarm_gears.testing.test_surface_trends.TessellationTests">
+<em class="property">class </em><code class="sig-prename descclassname">disarm_gears.testing.test_surface_trends.</code><code class="sig-name descname">TessellationTests</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_surface_trends.TessellationTests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="disarm_gears.testing.test_surface_trends.TessellationTests.test_trend_1st_order">
+<code class="sig-name descname">test_trend_1st_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_surface_trends.TessellationTests.test_trend_1st_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="disarm_gears.testing.test_surface_trends.TessellationTests.test_trend_2nd_order">
+<code class="sig-name descname">test_trend_2nd_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_surface_trends.TessellationTests.test_trend_2nd_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="disarm_gears.testing.test_surface_trends.TessellationTests.test_trend_3rd_order">
+<code class="sig-name descname">test_trend_3rd_order</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_surface_trends.TessellationTests.test_trend_3rd_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-disarm_gears.testing.test_tile_pattern">
+<span id="disarm-gears-testing-test-tile-pattern-module"></span><h2>disarm_gears.testing.test_tile_pattern module<a class="headerlink" href="#module-disarm_gears.testing.test_tile_pattern" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="disarm_gears.testing.test_tile_pattern.test_attributes_array">
+<code class="sig-prename descclassname">disarm_gears.testing.test_tile_pattern.</code><code class="sig-name descname">test_attributes_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_tile_pattern.test_attributes_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_tile_pattern.test_inputs">
+<code class="sig-prename descclassname">disarm_gears.testing.test_tile_pattern.</code><code class="sig-name descname">test_inputs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_tile_pattern.test_inputs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_tile_pattern.test_locate">
+<code class="sig-prename descclassname">disarm_gears.testing.test_tile_pattern.</code><code class="sig-name descname">test_locate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_tile_pattern.test_locate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_tile_pattern.test_marked_points_to_frame">
+<code class="sig-prename descclassname">disarm_gears.testing.test_tile_pattern.</code><code class="sig-name descname">test_marked_points_to_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_tile_pattern.test_marked_points_to_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_tile_pattern.test_outputs">
+<code class="sig-prename descclassname">disarm_gears.testing.test_tile_pattern.</code><code class="sig-name descname">test_outputs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_tile_pattern.test_outputs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_tile_pattern.test_points_to_frame">
+<code class="sig-prename descclassname">disarm_gears.testing.test_tile_pattern.</code><code class="sig-name descname">test_points_to_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_tile_pattern.test_points_to_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="disarm_gears.testing.test_tile_pattern.test_set_boundary">
+<code class="sig-prename descclassname">disarm_gears.testing.test_tile_pattern.</code><code class="sig-name descname">test_set_boundary</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_tile_pattern.test_set_boundary" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-disarm_gears.testing.test_timeframe">
+<span id="disarm-gears-testing-test-timeframe-module"></span><h2>disarm_gears.testing.test_timeframe module<a class="headerlink" href="#module-disarm_gears.testing.test_timeframe" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="disarm_gears.testing.test_timeframe.TimeframeTests">
+<em class="property">class </em><code class="sig-prename descclassname">disarm_gears.testing.test_timeframe.</code><code class="sig-name descname">TimeframeTests</code><span class="sig-paren">(</span><em class="sig-param">methodName='runTest'</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_timeframe.TimeframeTests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="disarm_gears.testing.test_timeframe.TimeframeTests.test_inputs">
+<code class="sig-name descname">test_inputs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_timeframe.TimeframeTests.test_inputs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="disarm_gears.testing.test_timeframe.TimeframeTests.test_outputs">
+<code class="sig-name descname">test_outputs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_timeframe.TimeframeTests.test_outputs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="disarm_gears.testing.test_timeframe.TimeframeTests.test_which_knots">
+<code class="sig-name descname">test_which_knots</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.testing.test_timeframe.TimeframeTests.test_which_knots" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-disarm_gears.testing">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-disarm_gears.testing" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, DiSARM authors
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
