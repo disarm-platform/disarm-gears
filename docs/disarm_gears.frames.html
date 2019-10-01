@@ -165,6 +165,24 @@
 <em class="property">class </em><code class="sig-prename descclassname">disarm_gears.frames.point_pattern.</code><code class="sig-name descname">PointPattern</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">attributes=None</em>, <em class="sig-param">crs=None</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.frames.point_pattern.PointPattern" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
+<dt id="disarm_gears.frames.point_pattern.PointPattern.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">points</em>, <em class="sig-param">attributes=None</em>, <em class="sig-param">crs=None</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.frames.point_pattern.PointPattern.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>General class to handle point pattern observations in space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>points</strong> – Set of coordinates.
+Numpy array, shape = [n_points, 2].</p></li>
+<li><p><strong>attributes</strong> – Attributes associated to the points (optional).
+Numpy array or pandas DataFrame, shape = [n_points, m].</p></li>
+<li><p><strong>crs</strong> – Coordinate reference system (optional).
+String.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="disarm_gears.frames.point_pattern.PointPattern.attributes_array">
 <code class="sig-name descname">attributes_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.frames.point_pattern.PointPattern.attributes_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an array of attributes associated to the region, if any.</p>
@@ -223,6 +241,29 @@ Geopandas DataFrame.</p>
 <dt id="disarm_gears.frames.sparse_grid.SparseGrid">
 <em class="property">class </em><code class="sig-prename descclassname">disarm_gears.frames.sparse_grid.</code><code class="sig-name descname">SparseGrid</code><span class="sig-paren">(</span><em class="sig-param">x_lim</em>, <em class="sig-param">y_lim</em>, <em class="sig-param">n_cols=10</em>, <em class="sig-param">n_rows=10</em>, <em class="sig-param">tag_prefix=''</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.frames.sparse_grid.SparseGrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="disarm_gears.frames.sparse_grid.SparseGrid.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">x_lim</em>, <em class="sig-param">y_lim</em>, <em class="sig-param">n_cols=10</em>, <em class="sig-param">n_rows=10</em>, <em class="sig-param">tag_prefix=''</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.frames.sparse_grid.SparseGrid.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>General class to define a spatial frame composed of regular polygons,
+based on a grid of size n_cols x n_rows</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x_lim</strong> – Minimum and Maximum values in the horizontal axis.
+Tupple of floats.</p></li>
+<li><p><strong>y_lim</strong> – Minimum and Maximum values in the vertical axis.
+Tupple of floats.</p></li>
+<li><p><strong>n_cols</strong> – Number of columns in which the horizontal axis is divided.
+Integer.</p></li>
+<li><p><strong>n_rows</strong> – Number of columns in which the vertical axis is divided.
+Integer</p></li>
+<li><p><strong>tag_prefix</strong> – Prefix to use as id of the polygons in the grid.
+String.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="method">
 <dt id="disarm_gears.frames.sparse_grid.SparseGrid.add_polygon_from_tag">
 <code class="sig-name descname">add_polygon_from_tag</code><span class="sig-paren">(</span><em class="sig-param">tag</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.frames.sparse_grid.SparseGrid.add_polygon_from_tag" title="Permalink to this definition">¶</a></dt>
@@ -362,6 +403,24 @@ String</p>
 <em class="property">class </em><code class="sig-prename descclassname">disarm_gears.frames.tile_pattern.</code><code class="sig-name descname">TilePattern</code><span class="sig-paren">(</span><em class="sig-param">geometries</em>, <em class="sig-param">attributes=None</em>, <em class="sig-param">crs=None</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.frames.tile_pattern.TilePattern" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#disarm_gears.frames.point_pattern.PointPattern" title="disarm_gears.frames.point_pattern.PointPattern"><code class="xref py py-class docutils literal notranslate"><span class="pre">disarm_gears.frames.point_pattern.PointPattern</span></code></a></p>
 <dl class="method">
+<dt id="disarm_gears.frames.tile_pattern.TilePattern.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">geometries</em>, <em class="sig-param">attributes=None</em>, <em class="sig-param">crs=None</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.frames.tile_pattern.TilePattern.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define a spatial region based on a GeoDataFrame .</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>geometries</strong> – Geometries that delimit the region.
+geopandas GeoSeries.</p></li>
+<li><p><strong>attributes</strong> – Attributes associated to the geometries (optional).
+Numpy array or pandas DataFrame, shape = [n_points, m].</p></li>
+<li><p><strong>crs</strong> – Coordinate reference system (optional).
+String.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="disarm_gears.frames.tile_pattern.TilePattern.locate">
 <code class="sig-name descname">locate</code><span class="sig-paren">(</span><em class="sig-param">X</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.frames.tile_pattern.TilePattern.locate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Associate geometries in the region with a set of locations X.</p>
@@ -443,6 +502,31 @@ Geopandas DataFrame.</p>
 <dt id="disarm_gears.frames.timeframe.Timeframe">
 <em class="property">class </em><code class="sig-prename descclassname">disarm_gears.frames.timeframe.</code><code class="sig-name descname">Timeframe</code><span class="sig-paren">(</span><em class="sig-param">start</em>, <em class="sig-param">length</em>, <em class="sig-param">by='day'</em>, <em class="sig-param">step=1</em>, <em class="sig-param">end=None</em>, <em class="sig-param">directive='%Y-%m-%d'</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.frames.timeframe.Timeframe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="disarm_gears.frames.timeframe.Timeframe.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">start</em>, <em class="sig-param">length</em>, <em class="sig-param">by='day'</em>, <em class="sig-param">step=1</em>, <em class="sig-param">end=None</em>, <em class="sig-param">directive='%Y-%m-%d'</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.frames.timeframe.Timeframe.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define a timeframe for a model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – Initial date of the timeframe.
+Date encoded as: integer, float, string or datetime.
+Can be a None value if end is specified.</p></li>
+<li><p><strong>length</strong> – Length of the timeframe.
+Positive integer.</p></li>
+<li><p><strong>by</strong> – Units of time in which the frame is measured.
+String, one of ‘day’, ‘month’, ‘year’.</p></li>
+<li><p><strong>step</strong> – Number of units per time point.
+Positive integer.</p></li>
+<li><p><strong>end</strong> – Last date of the timeframe (optional and only used if start is None).
+Date encoded as: integer, float, string or datetime.</p></li>
+<li><p><strong>directive</strong> – Date format representation (default ‘%Y-%m-%d’).
+String.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="method">
 <dt id="disarm_gears.frames.timeframe.Timeframe.which_knot">
 <code class="sig-name descname">which_knot</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#disarm_gears.frames.timeframe.Timeframe.which_knot" title="Permalink to this definition">¶</a></dt>
